@@ -37,7 +37,15 @@ h1 small{font-family:"EB Garamond",serif;font-weight:400;font-size:13px;color:#c
 .chip[aria-pressed=true]{background:linear-gradient(180deg,#e8c272,#a8803a);color:#1b1206;border-color:#ffe6a8;box-shadow:0 0 16px rgba(232,194,114,.6)}
 .chip.done::after{content:"✓";position:absolute;top:-4px;right:-2px;background:#2f7d3a;color:#fff;border-radius:50%;width:17px;height:17px;font-size:11px;display:grid;place-items:center;font-family:sans-serif}
 .chip.tool{padding:0 12px;font-size:18px}
-#actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+#actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center}
+.seg.mode button{font-size:12px;padding:7px 11px}
+.btn.icon{font-size:18px;padding:4px 12px;font-family:system-ui,sans-serif}
+#hud.notes{border-color:#9fd0ff;box-shadow:0 0 0 1px rgba(159,208,255,.35),0 8px 30px rgba(0,0,0,.45)}
+#hud.notes .seg.mode button[aria-pressed=true]{background:linear-gradient(180deg,#bfe2ff,#5d9bd6);color:#08182a}
+#hud.notes .chip[aria-pressed=true]{background:linear-gradient(180deg,#bfe2ff,#5d9bd6);border-color:#dff0ff;box-shadow:0 0 16px rgba(159,208,255,.6)}
+#cluebar .mode-tag{font-family:Cinzel,serif;font-size:11px;letter-spacing:1px;color:#9fd0ff;border:1px solid #5d9bd6;border-radius:6px;padding:1px 6px;margin-right:6px;white-space:nowrap}
+#more{position:absolute;right:8px;bottom:calc(100% + 8px);display:none;flex-direction:column;gap:6px;padding:8px;min-width:160px}
+#more.on{display:flex}
 #toast{position:fixed;left:50%;top:calc(76px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-20px);opacity:0;transition:.3s;z-index:8;padding:10px 16px;font-size:17px;text-align:center;max-width:92vw;pointer-events:none}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.good{border-color:var(--ok)}#toast.bad{border-color:var(--red)}
@@ -61,6 +69,7 @@ h1 small{font-family:"EB Garamond",serif;font-weight:400;font-size:13px;color:#c
 .legend h4{margin:0 0 4px;font-family:Cinzel,serif;font-size:11px;letter-spacing:.5px}
 #dossier .close{position:sticky;top:0;float:right;z-index:1}
 @media (max-width:599px){
+  .seg.mode button{font-size:11px;padding:6px 8px}
   header{padding:6px 8px;gap:6px}h1{font-size:15px;width:100%}
   .seg button{padding:6px 8px;font-size:11px;min-height:34px}.btn{padding:6px 9px;font-size:11px;min-height:34px}
   #hud{padding:6px;gap:6px}#cluebar{min-height:36px}#cluebar .tx{font-size:14px}#cluebar .face{font-size:24px}
@@ -117,12 +126,20 @@ h1 small{font-family:"EB Garamond",serif;font-weight:400;font-size:13px;color:#c
   <div id="cluebar"></div>
   <div id="palette"></div>
   <div id="actions">
-    <button class="btn" id="dossBtn">Dossier</button>
+    <div class="seg mode" role="group" aria-label="Invoer">
+      <button data-m="pen" aria-pressed="true" title="Pion plaatsen (N wisselt)">♟ Pion</button><button data-m="notes" title="Notities maken (N wisselt)">✎ Notitie</button>
+    </div>
+    <button class="btn icon" id="undoBtn" aria-label="Ongedaan maken" title="Ongedaan maken (Z)">↶</button>
     <button class="btn" id="camBtn">Boven</button>
-    <button class="btn" id="hintBtn">Hint</button>
-    <button class="btn" id="clearBtn">Wis</button>
-    <button class="btn" id="solveBtn">Oplossing</button>
+    <button class="btn" id="dossBtn">Dossier</button>
+    <button class="btn" id="moreBtn" aria-expanded="false">Meer</button>
     <button class="btn gold" id="accuseBtn">Beschuldig</button>
+  </div>
+  <div id="more" class="glass">
+    <button class="btn" id="hintBtn">Hint</button>
+    <button class="btn" id="solveBtn">Oplossing</button>
+    <button class="btn" id="clearNotesBtn">Wis notities</button>
+    <button class="btn" id="clearBtn">Wis alles</button>
   </div>
 </div>
 <div id="toast" class="glass" role="status" aria-live="polite"></div>
@@ -361,7 +378,7 @@ const OPTXT={stoel:'op een <b>stoel</b>',paard:'op een <b>paard</b>',bank:'op ee
 const OPVERB={stoel:'Zat',paard:'Zat',bank:'Zat',tapijt:'Stond',bed:'Lag',troon:'Zat'};
 const SUBS=['Het hof wilde een feestmaal. Het kreeg een lijk.','De ophaalbrug ging omhoog. Niemand kwam er meer uit.','Iemand in de burcht speelt een gevaarlijk spel.','Het bal was nog niet begonnen toen het gegil klonk.','De hofnar lacht niet meer.'];
 const PCOL=['#3d8bfd','#2fbf71','#f2a33a','#9b59d0','#1fb5a8','#e6732e','#5b6b8c','#e04f9a'];
-let P=null,diff='medium',tool=null,state={},marks={},showSol=false;
+let P=null,diff='medium',tool=null,state={},marks={},notes={},mode='pen',showSol=false;const hist=[];
 
 function frag(a,n,first){
   const [k,v]=a.split(':');const g=P.sus.find(s=>s.name===n).g;const pr=g==='f'?'haar':'zijn';
@@ -518,7 +535,7 @@ const BUILD={
 };
 
 // ---------- board ----------
-let world=null,tiles=[],pawns={},xMarks={},hl=null,spot=null;
+let world=null,tiles=[],pawns={},xMarks={},hl=null,spot=null,furn=[],notesMesh=null,notesCtx=null,notesTex=null;const NPX=120;
 const HEIGHT={stoel:.31,troon:.38,bed:.37,bank:.31,paard:.63,tapijt:.026};
 function cellPos(i){const N=P.M.N;return new THREE.Vector3(i%N-(N-1)/2,0,Math.floor(i/N)-(N-1)/2)}
 function labelPlane(text){const c=document.createElement('canvas');c.width=512;c.height=96;const g=c.getContext('2d');
@@ -530,7 +547,7 @@ function labelPlane(text){const c=document.createElement('canvas');c.width=512;c
 
 function buildWorld(){
   if(world){scene.remove(world);world.traverse(o=>{if(o.geometry)o.geometry.dispose()})}
-  world=new THREE.Group();scene.add(world);tiles=[];pawns={};xMarks={};flames.length=0;
+  world=new THREE.Group();scene.add(world);tiles=[];pawns={};xMarks={};flames.length=0;furn=[];
   const M=P.M,N=M.N,H=N/2;
   // ground, moat, island
   const ground=new THREE.Mesh(new THREE.CircleGeometry(60,48),mat('#2b3a24',{roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.6;ground.receiveShadow=true;world.add(ground);
@@ -565,7 +582,12 @@ function buildWorld(){
     const cx=(Math.min(...xs)+Math.max(...xs))/2-(N-1)/2,cz=(Math.min(...ys)+Math.max(...ys))/2-(N-1)/2;
     const g=f(L);g.position.set(cx,0,cz);
     if(L>1)g.rotation.y=(ys[0]!==ys[1])?Math.PI/2:0;else g.rotation.y=((P.seed*7+oi*13)%4)*Math.PI/2;
-    world.add(g)}
+    world.add(g);furn.push(g)}
+  // pencil-mark layer: one canvas over the whole board, each person has a fixed slot in a 3x3 mini grid
+  {const c=document.createElement('canvas');c.width=c.height=N*NPX;notesCtx=c.getContext('2d');
+   notesTex=new THREE.CanvasTexture(c);notesTex.colorSpace=THREE.SRGBColorSpace;notesTex.anisotropy=8;
+   notesMesh=new THREE.Mesh(new THREE.PlaneGeometry(N,N),new THREE.MeshBasicMaterial({map:notesTex,transparent:true,depthWrite:false}));
+   notesMesh.rotation.x=-Math.PI/2;notesMesh.position.y=.035;notesMesh.renderOrder=5;world.add(notesMesh)}
   // region labels
   for(let k=0;k<M.K;k++){let best=-1,bs=-1e9;for(let i=0;i<N*N;i++)if(M.reg[i]===k){const sc=(M.obj[i]?0:1000)+Math.floor(i/N)*20-(i%N);if(sc>bs){bs=sc;best=i}}
     const l=labelPlane(M.rooms[k].name.toUpperCase());const p=cellPos(best);l.position.set(p.x,.03,p.z+.32);l.scale.setScalar(.85);world.add(l)}
@@ -577,6 +599,40 @@ function buildWorld(){
   const dpts=new THREE.Points(dust,new THREE.PointsMaterial({color:'#ffe3a8',size:.04,transparent:true,opacity:.6,depthWrite:false}));dpts.userData.dust=true;world.add(dpts);
   sun.shadow.camera.left=sun.shadow.camera.bottom=-(H+2.5);sun.shadow.camera.right=sun.shadow.camera.top=H+2.5;sun.shadow.camera.updateProjectionMatrix();
 }
+
+// ---------- notes ----------
+const SLOT=L=>L==='V'?8:'ABCDEFGH'.indexOf(L);
+const byLetter=L=>people().find(n=>letter(n)===L);
+const ncolor=n=>n===P.vic.name?'#c62828':pcolor(n);
+function drawNotes(){if(!notesCtx)return;const N=P.M.N,g=notesCtx;g.clearRect(0,0,N*NPX,N*NPX);
+  const focus=tool&&tool!=='X'&&tool!=='erase'?letter(tool):null;const sl=NPX/3;
+  g.textAlign='center';g.textBaseline='middle';g.lineJoin='round';
+  for(const k in notes){const i=+k,x0=(i%N)*NPX,y0=Math.floor(i/N)*NPX;
+    for(const L of notes[k]){const n=byLetter(L);if(!n)continue;const s=SLOT(L),cx=x0+sl*(s%3)+sl/2,cy=y0+sl*Math.floor(s/3)+sl/2;
+      const on=!focus||focus===L;g.globalAlpha=on?1:.55;
+      if(focus===L){g.fillStyle=ncolor(n);g.beginPath();g.arc(cx,cy,sl*.46,0,7);g.fill();g.fillStyle='#fff';g.font=`800 ${sl*.7}px Cinzel, Georgia, serif`;g.fillText(L,cx,cy+2)}
+      else{g.font=`800 ${sl*.68}px Cinzel, Georgia, serif`;g.lineWidth=7;g.strokeStyle='rgba(255,250,235,.95)';g.strokeText(L,cx,cy+2);g.fillStyle=ncolor(n);g.fillText(L,cx,cy+2)}}}
+  g.globalAlpha=1;notesTex.needsUpdate=true;notesMesh.visible=!showSol}
+const FADE=new Map();
+function faded(m){if(!FADE.has(m)){const c=m.clone();c.transparent=true;c.opacity=.22;c.depthWrite=false;FADE.set(m,c)}return FADE.get(m)}
+function fadeFurniture(on){for(const g of furn)g.traverse(o=>{
+  if(o.isSprite){o.visible=!on;return}if(!o.isMesh)return;
+  if(on&&!o.userData.orig){o.userData.orig=o.material;o.material=Array.isArray(o.material)?o.material.map(faded):faded(o.material);o.castShadow=false}
+  else if(!on&&o.userData.orig){o.material=o.userData.orig;o.userData.orig=null;o.castShadow=true}})}
+function setMode(m){mode=m;document.querySelectorAll('.seg.mode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m));
+  $('#hud').classList.toggle('notes',m==='notes');
+  // in note mode the letters must stay readable: draw them over the furniture and fade the furniture
+  if(notesMesh){notesMesh.material.depthTest=m!=='notes';notesMesh.material.needsUpdate=true}fadeFurniture(m==='notes');
+  if(m==='notes'&&!topView){topView=true;$('#camBtn').textContent='3D';flyTo(true,700)}
+  renderUI()}
+document.querySelectorAll('.seg.mode button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+function snap(){hist.push(JSON.stringify({state,marks,notes}));if(hist.length>300)hist.shift()}
+function undo(){if(showSol)return;if(!hist.length){toast('Niets om ongedaan te maken.');return}
+  const s=JSON.parse(hist.pop());state=s.state;marks=s.marks;notes=s.notes;syncPawns();renderUI();save()}
+$('#undoBtn').onclick=undo;
+// placing someone settles their row and column: clear those notes and that person's notes elsewhere
+function placeAt(n,i){const N=P.M.N,L=letter(n);state[n]=i;delete marks[i];
+  for(const k in notes){const j=+k;if(Math.floor(j/N)===Math.floor(i/N)||j%N===i%N)delete notes[k];else{const s=notes[k].replace(L,'');if(s)notes[k]=s;else delete notes[k]}}}
 
 // ---------- pawns ----------
 const PAWN_GEO=new THREE.LatheGeometry([[0,0],[.2,0],[.21,.03],[.18,.06],[.12,.09],[.085,.14],[.07,.3],[.12,.33],[.12,.35],[.06,.37],[0,.37]].map(p=>new THREE.Vector2(p[0],p[1])),24);
@@ -677,12 +733,19 @@ canvas.addEventListener('pointerup',e=>{if(!down||!P)return;const d=Math.hypot(e
 
 function tapCell(i){
   if(showSol)return;const p=cellPos(i);hl.position.set(p.x,.04,p.z);hl.userData.on=true;clearTimeout(hl.userData.to);hl.userData.to=setTimeout(()=>hl.userData.on=false,900);
-  const occAt=Object.keys(state).find(n=>state[n]===i);
-  if(!tool){if(occAt){tool=occAt;renderUI();return}if(marks[i])delete marks[i];else marks[i]=1}
-  else if(tool==='X'){if(marks[i])delete marks[i];else{marks[i]=1;if(occAt)delete state[occAt]}}
-  else if(tool==='erase'){delete marks[i];if(occAt)delete state[occAt]}
-  else{const g=geom(P.M);if(!g.occ.includes(i)){toast('Daar kan niemand staan.','bad');buzz();return}
-    if(occAt===tool)delete state[tool];else{if(occAt)delete state[occAt];state[tool]=i;delete marks[i];
+  const occAt=Object.keys(state).find(n=>state[n]===i);const canStand=geom(P.M).occ.includes(i);
+  if(mode==='notes'&&tool!=='X'){
+    if(!tool){toast('Kies eerst een verdachte voor je notitie.');buzz();return}
+    if(tool==='erase'){if(!notes[i])return;snap();delete notes[i]}
+    else{if(occAt){toast(`Hier staat al ${occAt}.`);return}
+      if(!canStand){toast('Daar kan niemand staan.','bad');buzz();return}
+      snap();const L=letter(tool);const s=notes[i]||'';const t=s.includes(L)?s.replace(L,''):s+L;if(t)notes[i]=t;else delete notes[i];delete marks[i]}
+    renderUI();save();return}
+  if(!tool){if(occAt){tool=occAt;renderUI();return}snap();if(marks[i])delete marks[i];else{marks[i]=1;delete notes[i]}}
+  else if(tool==='X'){snap();if(marks[i])delete marks[i];else{marks[i]=1;delete notes[i];if(occAt)delete state[occAt]}}
+  else if(tool==='erase'){snap();delete marks[i];delete notes[i];if(occAt)delete state[occAt]}
+  else{if(!canStand){toast('Daar kan niemand staan.','bad');buzz();return}
+    snap();if(occAt===tool)delete state[tool];else{if(occAt)delete state[occAt];placeAt(tool,i);
       const nxt=people().find(n=>state[n]===undefined);if(nxt&&innerWidth<900)tool=nxt}}
   syncPawns();renderUI();save()}
 function buzz(){try{navigator.vibrate&&navigator.vibrate(30)}catch(e){}}
@@ -696,10 +759,13 @@ function renderUI(){
   for(const n of people())pal.appendChild(chip(n,`<span class="dot" style="background:${pcolor(n)}">${person(n).face}</span>${letter(n)}`,n));
   pal.appendChild(chip('X','✕','Vak schrappen','tool'));pal.appendChild(chip('erase','⌫','Gum','tool'));
   const cb=$('#cluebar');
-  if(tool&&tool!=='X'&&tool!=='erase'){cb.innerHTML=`<span class="face">${person(tool).face}</span><div><div class="nm">${tool.toUpperCase()}</div><div class="tx">${clueText(tool)}</div></div>`}
-  else if(tool==='X')cb.innerHTML=`<div class="tx">Tik op vakken om ze te <b>schrappen</b>.</div>`;
-  else if(tool==='erase')cb.innerHTML=`<div class="tx">Tik op een vak om het te <b>wissen</b>.</div>`;
-  else cb.innerHTML=`<div class="tx">Kies een verdachte en tik op een vak. Sleep om te draaien, knijp om te zoomen.</div>`;
+  const tag=mode==='notes'?'<span class="mode-tag">✎ NOTITIE</span>':'';
+  if(tool&&tool!=='X'&&tool!=='erase'){cb.innerHTML=`<span class="face">${person(tool).face}</span><div><div class="nm">${tag}${tool.toUpperCase()}</div><div class="tx">${clueText(tool)}</div></div>`}
+  else if(tool==='X')cb.innerHTML=`<div class="tx">${tag}Tik op vakken om ze te <b>schrappen</b>.</div>`;
+  else if(tool==='erase')cb.innerHTML=`<div class="tx">${tag}Tik op een vak om ${mode==='notes'?'de notities':'het'} te <b>wissen</b>.</div>`;
+  else if(mode==='notes')cb.innerHTML=`<div class="tx">${tag}Kies een verdachte en tik op elk vak waar die <b>misschien</b> stond.</div>`;
+  else cb.innerHTML=`<div class="tx">Kies een verdachte en tik op een vak. Met <b>✎ Notitie</b> zet je kleine letters voor twijfelgevallen.</div>`;
+  drawNotes();
   const c=$('#cards');c.innerHTML='';
   for(const n of people()){const s=person(n);const d=document.createElement('div');d.className='card'+(s.victim?' victim':'')+(tool===n?' sel':'');
     d.innerHTML=`${state[n]!==undefined?'<span class="ok">✓</span>':''}<div class="face">${s.face}</div><div class="nm">${n.toUpperCase()}</div><div>${clueText(n)}</div>`;
@@ -725,12 +791,16 @@ function renderStatic(){
 
 $('#dossBtn').onclick=()=>$('#dossier').classList.add('open');
 $('#closeDoss').onclick=()=>$('#dossier').classList.remove('open');
+$('#moreBtn').onclick=e=>{e.stopPropagation();const m=$('#more');m.classList.toggle('on');$('#moreBtn').setAttribute('aria-expanded',m.classList.contains('on'))};
+document.addEventListener('click',e=>{if(!e.target.closest('#more')&&e.target.id!=='moreBtn')$('#more').classList.remove('on')});
+$('#more').addEventListener('click',e=>{if(e.target.closest('button'))setTimeout(()=>$('#more').classList.remove('on'),0)});
 $('#hintBtn').onclick=()=>{if(showSol)return;const wrong=people().find(n=>state[n]!==undefined&&state[n]!==P.sol[n]);
   if(wrong){toast(`${wrong} staat niet goed.`,'bad');tool=wrong;renderUI();return}
   const todo=people().find(n=>state[n]===undefined);if(!todo){toast('Alles staat. Wie is de moordenaar?');return}
-  state[todo]=P.sol[todo];delete marks[P.sol[todo]];toast(`${todo} is geplaatst.`);syncPawns();renderUI();save()};
-$('#clearBtn').onclick=()=>{if(!confirm('Alles wissen?'))return;state={};marks={};if(showSol)toggleSol();syncPawns();renderUI();save()};
-function toggleSol(){showSol=!showSol;$('#solveBtn').textContent=showSol?'Verberg':'Oplossing';syncPawns();
+  snap();placeAt(todo,P.sol[todo]);toast(`${todo} is geplaatst.`);syncPawns();renderUI();save()};
+$('#clearNotesBtn').onclick=()=>{if(!Object.keys(notes).length)return;snap();notes={};renderUI();save();toast('Notities gewist. ↶ zet ze terug.')};
+$('#clearBtn').onclick=()=>{if(!confirm('Pionnen, kruisjes en notities wissen?'))return;snap();state={};marks={};notes={};if(showSol)toggleSol();syncPawns();renderUI();save()};
+function toggleSol(){showSol=!showSol;$('#solveBtn').textContent=showSol?'Verberg oplossing':'Oplossing';syncPawns();drawNotes();
   if(showSol)toast(`${P.killer} was alleen met ${P.vic.name} in de ${P.M.rooms[P.M.reg[P.sol[P.vic.name]]].name.toLowerCase()}.`)}
 $('#solveBtn').onclick=toggleSol;
 $('#accuseBtn').onclick=()=>$('#accuse').classList.add('on');
@@ -746,11 +816,11 @@ function confetti(){const cols=['#e8c272','#e0503c','#3d8bfd','#2fbf71','#ffffff
     m.userData.r=new THREE.Vector3(Math.random()*.2,Math.random()*.2,Math.random()*.2);g.add(m);parts.push(m)}
   tween(5000,()=>{for(const m of parts){m.position.add(m.userData.v);m.rotation.x+=m.userData.r.x;m.rotation.y+=m.userData.r.y;m.position.x+=Math.sin(m.position.y*3)*.004}},()=>world.remove(g))}
 
-document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{diff=b.dataset.d;newCase()});
+document.querySelectorAll('header .seg button').forEach(b=>b.onclick=()=>{diff=b.dataset.d;newCase()});
 $('#newBtn').onclick=()=>newCase();
 
-function save(){try{localStorage.setItem('murdoku2:'+P.diff+':'+P.seed,JSON.stringify({state,marks}));localStorage.setItem('murdoku2:last',location.hash)}catch(e){}}
-function load(){try{const s=JSON.parse(localStorage.getItem('murdoku2:'+P.diff+':'+P.seed)||'null');if(s){state=s.state||{};marks=s.marks||{}}}catch(e){}}
+function save(){try{localStorage.setItem('murdoku2:'+P.diff+':'+P.seed,JSON.stringify({state,marks,notes}));localStorage.setItem('murdoku2:last',location.hash)}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem('murdoku2:'+P.diff+':'+P.seed)||'null');if(s){state=s.state||{};marks=s.marks||{};notes=s.notes||{}}}catch(e){}}
 
 let worker=null;
 function makeWorker(){try{const src=document.getElementById('core').textContent+`;onmessage=e=>postMessage(generate(e.data.seed,e.data.diff))`;
@@ -762,10 +832,10 @@ async function openCase(seed,d){
   $('#loader').classList.remove('off');$('#loadTxt').textContent='Een nieuwe moord wordt beraamd…';
   let g=null;for(let k=0;k<5&&!g;k++){g=await genAsync(seed,d);if(!g)seed++}
   if(!g){$('#loader').classList.add('off');toast('Dat lukte niet. Probeer opnieuw.','bad');return}
-  P=g;diff=d;state={};marks={};showSol=false;tool=null;$('#solveBtn').textContent='Oplossing';
-  document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.d===d));
+  P=g;diff=d;state={};marks={};notes={};hist.length=0;showSol=false;tool=null;$('#solveBtn').textContent='Oplossing';
+  document.querySelectorAll('header .seg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.d===d));
   history.replaceState(null,'',`#${d}-${seed}`);load();
-  buildWorld();renderStatic();renderUI();syncPawns(false);resize();save();
+  buildWorld();renderStatic();setMode('pen');syncPawns(false);resize();save();
   $('#loader').classList.add('off');topView=false;$('#camBtn').textContent='Boven';flyTo(false,1800,true);
 }
 function newCase(){openCase(1+Math.floor(Math.random()*99999),diff)}
@@ -775,7 +845,12 @@ camera.position.set(0,20,20);resize();loop();
 document.fonts&&document.fonts.ready.then(()=>{});
 if(!fromHash()){let last=null;try{last=localStorage.getItem('murdoku2:last')}catch(e){}
   if(last&&/^#(easy|medium|hard)-\d+$/.test(last))location.hash=last,fromHash();else openCase(75,'medium')}
-window.__dbg={get P(){return P},tapCell,get state(){return state},get pawns(){return pawns},camera};
+addEventListener('keydown',e=>{if(!P||e.target.closest('select,input,textarea'))return;const k=e.key.toUpperCase();
+  if((e.metaKey||e.ctrlKey)&&k==='Z'){e.preventDefault();undo();return}if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(k==='Z')undo();else if(k==='N')setMode(mode==='notes'?'pen':'notes');else if(k==='X')tool=tool==='X'?null:'X';
+  else if(k==='BACKSPACE'||k==='DELETE')tool=tool==='erase'?null:'erase';else if(k==='ESCAPE')tool=null;
+  else{const n=byLetter(k);if(!n)return;tool=tool===n?null:n}renderUI()});
+window.__dbg={get P(){return P},tapCell,setMode,get notes(){return notes},get state(){return state},get pawns(){return pawns},camera};
 </script>
 </body>
 </html>
