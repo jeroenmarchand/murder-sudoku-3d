@@ -48,11 +48,13 @@ const srv=await start();const b=srv.browser;const URL=process.argv[2]||srv.url+'
   ok(Object.keys(await D(()=>__dbg.notes)).length>=5,'notes placed');
   await p.screenshot({path:`test-results/${name}-notes.png`});
   // object finder: rings show in note mode (top view), stay up for ~4 s, then fade out
-  const ft=sol.obj.find(Boolean);await D(t=>__dbg.showType(t),ft);await p.waitForTimeout(1000);
+  const ft=sol.obj.find(Boolean);await D(t=>__dbg.showType(t),ft);
+  // poll rather than sleep: software rendering in CI can take seconds per frame
+  await p.waitForFunction(()=>{const f=__dbg.find();return f.visible&&f.alpha>.5},null,{timeout:CI?20000:3000,polling:50}).catch(()=>{});
   const f1=await D(()=>__dbg.find());ok(f1.on&&f1.visible&&f1.n>0&&f1.alpha>.5&&f1.pins===f1.n,`finder rings visible in note mode (${f1.n}× ${ft}, alpha ${f1.alpha.toFixed(2)})`);
   await p.screenshot({path:`test-results/${name}-finder.png`});
   ok(f1.focus>0,'board focus darkening on');
-  await p.waitForTimeout(4600);const f2=await D(()=>__dbg.find());ok(!f2.on&&!f2.visible&&f2.pins===0,'finder rings gone after ~5 s');
+  await p.waitForFunction(()=>!__dbg.find().on,null,{timeout:CI?60000:8000}).catch(()=>{});await p.waitForTimeout(300);const f2=await D(()=>__dbg.find());ok(!f2.on&&!f2.visible&&f2.pins===0,'finder rings gone after ~5 s');
   await p.click('.seg.mode button[data-m=pen]');await idle();
   // x mode
   await p.click('.seg.mode button[data-m=x]');await D(`__dbg.tapCell(${free[10]})`);await idle();
