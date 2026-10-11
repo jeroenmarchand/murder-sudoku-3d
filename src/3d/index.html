@@ -247,6 +247,35 @@ details.rules[open] summary svg{transform:rotate(180deg)}
 .bar::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:slide 1.2s ease-in-out infinite}
 @keyframes slide{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
 
+/* ---------- tutorial ---------- */
+#coach{position:fixed;z-index:11;left:12px;top:70px;width:min(380px,calc(100vw - 16px));padding:14px 16px;display:flex;flex-direction:column;gap:9px;
+  transition:left .35s var(--ease),top .35s var(--ease);box-shadow:var(--shadow),0 0 0 1px rgba(228,192,122,.22),inset 0 1px 0 rgba(255,255,255,.06)}
+#coach[hidden],#tutSpot[hidden],#coach [hidden]{display:none}
+.ch-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#coachStep{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.ch-exit{font-size:12px;font-weight:600;color:var(--ink2);padding:6px 8px;margin:-6px -8px -6px 0;border-radius:8px;transition:background .15s,color .15s}
+.ch-exit:hover,.ch-exit:focus-visible{color:var(--ink);background:var(--surface3);outline:none}
+.ch-bar{height:3px;border-radius:2px;background:var(--line);overflow:hidden}
+.ch-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-lo),var(--gold-hi));transition:width .4s var(--ease)}
+#coachTxt{font-family:var(--story);font-size:17px;line-height:1.32;color:var(--ink);outline:none}
+#coachTxt b,#coachAct b{color:var(--gold-hi);font-weight:600}
+#coachTxt ul{margin:6px 0 0;padding-left:18px}#coachTxt li{margin-bottom:3px}#coachTxt li::marker{color:var(--gold-lo)}
+#coachAct{font-size:14px;font-weight:600;line-height:1.4;color:var(--ink);position:relative;padding-left:17px}
+#coachAct::before{content:"";position:absolute;left:0;top:6px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+#coachAct:empty,#coachFb:empty{display:none}
+#coachFb{font-size:13.5px;line-height:1.38;padding:8px 10px;border-radius:10px;background:rgba(230,106,85,.13);color:#f6c4b8}
+#coachFb.good{background:rgba(121,201,138,.13);color:#c4ebcd}#coachFb b{color:#fff;font-weight:600}
+.ch-row{display:flex;justify-content:flex-end;align-items:center;gap:10px}
+.ch-link{font-size:13px;color:var(--ink2);text-decoration:underline;text-underline-offset:3px;padding:8px 2px;margin-right:auto}
+.ch-link:hover{color:var(--ink)}
+#coachNext{height:40px;padding:0 20px}
+#coach button:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
+#tutSpot{position:fixed;z-index:10;pointer-events:none;border-radius:14px;animation:spot 1.5s ease-in-out infinite;
+  box-shadow:0 0 0 2px var(--gold-hi),0 0 0 6px rgba(228,192,122,.22),0 0 22px 4px rgba(228,192,122,.45);transition:left .3s var(--ease),top .3s var(--ease),width .3s var(--ease),height .3s var(--ease)}
+@keyframes spot{50%{box-shadow:0 0 0 2px var(--gold-hi),0 0 0 11px rgba(228,192,122,.1),0 0 34px 8px rgba(228,192,122,.6)}}
+body.tut #timer,body.tut .meta .dot,body.tut #solveBtn,body.tut #clearBtn{display:none}
+body.tut .modal .panel{max-height:100%;overflow-y:auto}
+
 /* ---------- responsive ---------- */
 @media (max-width:599px){
   header{left:10px;right:10px;top:calc(8px + env(safe-area-inset-top))}
@@ -263,6 +292,11 @@ details.rules[open] summary svg{transform:rotate(180deg)}
   .seg button{min-width:36px}#actions .grp .ib{width:36px}
   #accuseBtn svg{display:none}
   .mrow .cta{padding:0 10px}
+  #coach{left:8px;right:8px;width:auto;padding:11px 13px 12px;gap:7px;border-radius:18px}
+  #coachTxt{font-size:15.5px;line-height:1.3}#coachAct{font-size:13.5px}#coachNext{height:38px}
+  body.tut #dossier{top:var(--tut-top,56px)}
+  body.tut .modal{align-items:flex-end;padding-top:var(--tut-top,16px)}
+  body.tut #newMenu{position:fixed;top:var(--tut-top,56px);right:8px;max-height:calc(100dvh - var(--tut-top,56px) - 8px);overflow:auto}
 }
 @media (max-width:359px){
   #palette{gap:4px}#actions{gap:5px}.grp{gap:4px}
@@ -360,6 +394,7 @@ details.rules[open] summary svg{transform:rotate(180deg)}
   </div>
   <div id="more" class="panel pop">
     <button class="mi" id="solveBtn"><svg><use href="#i-eye"/></svg><span>{{t:ui.solution}}</span></button>
+    <button class="mi" id="tutBtn"><svg><use href="#i-book"/></svg><span>{{t:ui.tutorial}}</span></button>
     <button class="mi" id="clearNotesBtn"><svg><use href="#i-erase"/></svg><span>{{t:ui.clearNotes}}</span></button>
     <button class="mi" id="fbBtn" data-feedback><svg><use href="#i-chat"/></svg><span>{{t:ui.feedback}}</span></button>
     <div class="sep"></div>
@@ -377,6 +412,17 @@ details.rules[open] summary svg{transform:rotate(180deg)}
   <div class="stats" id="winStats"></div>
   <div class="mrow"><button class="cta ghost" id="winLook">{{t:ui.look}}</button><button class="cta" id="winNext">{{t:ui.next}}</button></div>
 </div></div>
+<div class="modal" id="tutOffer" role="dialog" aria-modal="true" aria-labelledby="tutOfferH"><div class="panel"><h3 id="tutOfferH">{{t:tut.offerTitle}}</h3><p class="msub">{{t:tut.offerTxt}}</p>
+  <div class="mrow"><button class="cta ghost" id="tutSkip">{{t:tut.noThanks}}</button><button class="cta" id="tutGo">{{t:tut.start}}</button></div></div></div>
+<div id="tutSpot" hidden></div>
+<div id="coach" class="panel" role="region" aria-label="{{t:tut.label}}" hidden>
+  <div class="ch-top"><span id="coachStep"></span><button class="ch-exit" id="coachExit">{{t:tut.exit}}</button></div>
+  <div class="ch-bar"><i id="coachBar"></i></div>
+  <div id="coachTxt" tabindex="-1" aria-live="polite"></div>
+  <div id="coachAct" aria-live="polite"></div>
+  <div id="coachFb" role="status" aria-live="assertive"></div>
+  <div class="ch-row"><button class="ch-link" id="coachSkip">{{t:tut.skip}}</button><button class="cta" id="coachNext">{{t:tut.next}}</button></div>
+</div>
 <div id="loader"><div class="crest"><svg><use href="#i-crest"/></svg></div><div class="t">{{t:brand}}</div><div class="bar"></div><div id="loadTxt">{{t:ui.loading}}</div></div>
 
 <!--CORE-->
@@ -653,7 +699,7 @@ function buildWorld(){
     l.position.set(p.x+(best.pair?.5:0),.032,p.z-.355);world.add(l);labels.push(l)}
   // highlight ring
   hl=new THREE.Mesh(new THREE.RingGeometry(.36,.46,32),new THREE.MeshBasicMaterial({color:'#ffd977',transparent:true,opacity:.0,depthWrite:false,depthTest:false}));hl.rotation.x=-Math.PI/2;hl.renderOrder=8;hl.position.y=.04;world.add(hl);
-  find=null;findPins.length=0;
+  find=null;findPins.length=0;tring=null;
   spot=new THREE.SpotLight('#ff3b2b',0,8,.32,.5,1);spot.position.set(0,5,0);world.add(spot);world.add(spot.target);
   const DU=L.dust||['#ffe3a8',120,.4];const dust=new THREE.BufferGeometry();const dp=[];for(let i=0;i<DU[1];i++)dp.push((Math.random()-.5)*(N+2),Math.random()*3,(Math.random()-.5)*(N+2));
   dust.setAttribute('position',new THREE.Float32BufferAttribute(dp,3));
@@ -783,7 +829,7 @@ function flyTo(top,dur=1100,fromFar=false,focus=null){const g=camGoal(top,focus)
     s.set(s0.radius+(s1.radius-s0.radius)*k,s0.phi+(s1.phi-s0.phi)*k,s0.theta+dth*k);
     controls.target.copy(tg);camera.position.setFromSpherical(s).add(tg)},()=>controls.enabled=true,'cam')}
 function camLabel(){$('#camBtn').innerHTML=topView?'<svg><use href="#i-cube"/></svg><span>3D</span>':`<svg><use href="#i-top"/></svg><span>${L.ui.top}</span>`}
-function setTop(v){topView=v;camLabel();flyTo(v,800)}
+function setTop(v){topView=v;camLabel();flyTo(v,800);if(TUT){tutCheck();setTimeout(tutLayout,850)}}
 $('#camBtn').onclick=()=>setTop(!topView);
 
 let lastFree='';
@@ -791,7 +837,8 @@ function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);c
   // keep the board centred in the free area between the panels
   const hud=$('#hud').getBoundingClientRect(),head=$('header').getBoundingClientRect();
   const left=innerWidth>=900?$('#dossier').getBoundingClientRect().right:0;$('#toast').style.bottom=(h-hud.top+12)+'px';
-  const top=head.bottom+6,bottom=hud.top;const fw=w-left,fh=bottom-top;
+  // phones in the tutorial: the coach docks under the header, so the board fits below it
+  const top=(TUT&&w<600&&!$('#coach').hidden?$('#coach').getBoundingClientRect().bottom:head.bottom)+6,bottom=hud.top;const fw=w-left,fh=bottom-top;
   camera.setViewOffset(w,h,-(left/2),-((top-(h-bottom))/2),w,h);camera.fov=40;freeFrac={w:fw/w,h:fh/h};camera.updateProjectionMatrix();
   controls.maxDistance=40;controls.minDistance=3;
   // the HUD grows and shrinks with the clue text: refit when the free area really changes
@@ -809,7 +856,7 @@ for(const ev of['pointerdown','pointermove','wheel','keydown','touchstart'])addE
 document.addEventListener('visibilitychange',()=>{lastT=performance.now();wake()});
 const perf={fps:0,n:0,t0:performance.now(),shadows:0};
 function loop(){requestAnimationFrame(loop);const now=performance.now();
-  if(tweens.length||find?.on)lastAct=now;
+  if(tweens.length||find?.on||tring?.on&&!(RMOTION.matches&&now-tring.t0>600))lastAct=now;
   const busy=now-lastAct<2500,gap=busy?15:now-lastInput<60000?40:98;if(now-lastT<gap)return;
   if(++perf.n,now-perf.t0>=1000){perf.fps=Math.round(perf.n*1000/(now-perf.t0));perf.n=0;perf.t0=now}
   const real=now-lastT,t=clock.getElapsedTime(),dt=Math.min(.1,real/1000);lastT=now;
@@ -834,7 +881,7 @@ function loop(){requestAnimationFrame(loop);const now=performance.now();
   // keep panning near the board
   const L=P?P.M.N/2+1:6;controls.target.x=THREE.MathUtils.clamp(controls.target.x,-L,L);controls.target.z=THREE.MathUtils.clamp(controls.target.z,-L,L);controls.target.y=THREE.MathUtils.clamp(controls.target.y,-1,1);
   if(P&&!solved&&!showSol&&!document.hidden&&started){elapsed+=Math.min(1000,real);const sec=Math.floor(elapsed/1000);if(sec!==lastSec){lastSec=sec;$('#timer').textContent=fmtTime(elapsed)}}
-  findFrame(now);grade.uniforms.time.value=t%10;if(controls.update())lastAct=now;focusFrame();
+  findFrame(now);tringFrame(now);grade.uniforms.time.value=t%10;if(controls.update())lastAct=now;focusFrame();
   // shadows: every frame while busy (pawns and camera move), otherwise twice a second for the slow sun drift and swaying trees
   if(shadowDirty||busy||now-lastShadow>500){renderer.shadowMap.needsUpdate=true;shadowDirty=false;lastShadow=now;perf.shadows++}
   composer.render()}
@@ -909,17 +956,26 @@ function showType(t){if(!world)return;
     let pin=findPins[n];if(!pin){pin=new THREE.Sprite(PIN_M);pin.center.set(.5,0);pin.scale.set(.3,.45,1);pin.renderOrder=9;pin.raycast=()=>{};world.add(pin);findPins.push(pin)}
     const b=new THREE.Box3().setFromObject(g);pin.userData.y=Math.max(b.max.y,.2)+.1;pin.position.set((x0+x1)/2-(N-1)/2,pin.userData.y,(y0+y1)/2-(N-1)/2);find.pins.push(pin);n++}
   m.count=n;m.instanceMatrix.needsUpdate=true;sz.needsUpdate=true;find.t0=performance.now();find.on=n>0;
-  document.querySelectorAll('#olist .oi').forEach(b=>b.classList.toggle('on',find.on&&b.dataset.t===t))}
+  document.querySelectorAll('#olist .oi').forEach(b=>b.classList.toggle('on',find.on&&b.dataset.t===t));if(TUT&&find.on){TUT.found=t;tutCheck()}}
 function findFrame(now){if(!find)return;const e=(now-find.t0)/1000,rm=RMOTION.matches,u=FIND_M.uniforms;
   const a=!find.on?0:e<FIND_ON?(rm?1:ease(Math.min(1,e/.35))):Math.max(0,1-(e-FIND_ON)/FIND_OUT);
   if(find.on&&e>FIND_ON+FIND_OUT){find.on=false;document.querySelectorAll('#olist .oi.on').forEach(b=>b.classList.remove('on'))}
   u.uA.value=a;u.uP.value=rm?.5:.5+.5*Math.sin(e*5.5);u.uS.value=rm?1:1+.4*(1-ease(Math.min(1,e/.4)));find.mesh.visible=a>0;
   PIN_M.opacity=a;for(const p of findPins){p.visible=a>0&&find.pins.includes(p);if(p.visible)p.position.y=p.userData.y+(rm?0:.08*Math.abs(Math.sin(e*3.2))+.5*(1-ease(Math.min(1,e/.45))))}}
+// tutorial rings: the finder's look on any boxes of cells ([x0,y0,x1,y1]), held until replaced or cleared. Corners stay tight on long boxes.
+const TRING_M=FIND_M.clone();TRING_M.fragmentShader=TRING_M.fragmentShader.replace('min(vS.x,vS.y)*.92','min(min(vS.x,vS.y)*.92,.4)');let tring=null;
+function setRings(boxes){if(!world||!P)return;if(!tring){if(!boxes.length)return;const geo=new THREE.PlaneGeometry(2,2).rotateX(-Math.PI/2);geo.setAttribute('aSize',new THREE.InstancedBufferAttribute(new Float32Array(FIND_MAX*2),2));
+    const m=new THREE.InstancedMesh(geo,TRING_M,FIND_MAX);m.frustumCulled=false;m.renderOrder=4;m.raycast=()=>{};m.visible=false;world.add(m);tring={mesh:m,t0:0,on:false}}
+  const N=P.M.N,m=tring.mesh,sz=m.geometry.attributes.aSize,mx=new THREE.Matrix4();let n=0;
+  for(const [x0,y0,x1,y1] of boxes.slice(0,FIND_MAX)){m.setMatrixAt(n,mx.makeTranslation((x0+x1)/2-(N-1)/2,.03,(y0+y1)/2-(N-1)/2));sz.setXY(n,(x1-x0+1)/2-.08,(y1-y0+1)/2-.08);n++}
+  m.count=n;m.instanceMatrix.needsUpdate=true;sz.needsUpdate=true;tring.t0=performance.now();tring.on=n>0;lastAct=tring.t0}
+function tringFrame(now){if(!tring)return;const e=(now-tring.t0)/1000,rm=RMOTION.matches,u=TRING_M.uniforms,a=tring.on?(rm?1:ease(Math.min(1,e/.35))):0;
+  u.uA.value=a;u.uP.value=rm?.5:.5+.5*Math.sin(e*4.5);u.uS.value=rm?1:1+.3*(1-ease(Math.min(1,e/.4)));tring.mesh.visible=a>0}
 function ringAt(i){const p=cellPos(i);hl.position.set(p.x,baseY(i)+.04,p.z);hl.userData.on=true;hl.material.opacity=1;clearTimeout(hl.userData.to);hl.userData.to=setTimeout(()=>hl.userData.on=false,500)}
 function conflicts(i,who){const N=P.M.N;return Object.keys(state).filter(n=>n!==who&&(Math.floor(state[n]/N)===Math.floor(i/N)||state[n]%N===i%N))}
 
 function tapCell(i){
-  if(showSol||solvedNow)return;ringAt(i);
+  if(showSol||solvedNow)return;ringAt(i);if(TUT&&!tutTap(i))return;
   const occAt=Object.keys(state).find(n=>state[n]===i);const canStand=geom(P.M).occ.includes(i);
   if(mode==='x'){snap();if(marks[i])delete marks[i];else{marks[i]=1;delete notes[i];if(occAt)delete state[occAt]}}
   else if(mode==='notes'){
@@ -950,7 +1006,7 @@ let hintFor=null;const hintRings=[];
 function showHintRings(cells){for(const r of hintRings)r.visible=false;cells.forEach((i,k)=>{let r=hintRings[k];
   if(!r){r=new THREE.Mesh(new THREE.RingGeometry(.3,.4,32),new THREE.MeshBasicMaterial({color:'#9fd0ff',transparent:true,depthWrite:false,depthTest:false}));r.rotation.x=-Math.PI/2;r.renderOrder=9;hintRings.push(r)}
   if(r.parent!==world)world.add(r);const p=cellPos(i);r.position.set(p.x,baseY(i)+.05,p.z);r.visible=true})}
-function hint(){if(showSol||solvedNow)return;closePops();
+function hint(){if(showSol||solvedNow)return;closePops();if(TUT&&TUT.i<tutIdx('hint1')){tutFb(L.tut.hintLater,'bad');return}
   const wrong=people().find(n=>state[n]!==undefined&&state[n]!==P.sol[n]);
   if(wrong){hints++;toast(L.t.wrong(wrong),'bad');tool=wrong;renderUI();showHintRings([state[wrong]]);setTimeout(()=>showHintRings([]),2500);return}
   if(complete()){toast(L.t.allPlaced);return}
@@ -963,7 +1019,7 @@ function hint(){if(showSol||solvedNow)return;closePops();
 $('#hintBtn').onclick=hint;
 
 // ---------- UI ----------
-let toastT;function toast(t,c=''){const m=$('#toast');m.textContent=t;m.className='panel on '+c+(t.length>48?' long':'');clearTimeout(toastT);toastT=setTimeout(()=>m.classList.remove('on'),Math.max(2600,t.length*55))}
+let toastT;function toast(t,c=''){if(TUT&&TUT.F)return tutFb(t,c==='good'?'good':c==='bad'?'bad':'');const m=$('#toast');m.textContent=t;m.className='panel on '+c+(t.length>48?' long':'');clearTimeout(toastT);toastT=setTimeout(()=>m.classList.remove('on'),Math.max(2600,t.length*55))}
 function chip(id,html,label){const b=document.createElement('button');b.className='chip';b.innerHTML=html;b.setAttribute('aria-label',label);b.setAttribute('aria-pressed',tool===id);
   if(state[id]!==undefined)b.classList.add('done');b.onclick=()=>{tool=tool===id?null:id;if(mode==='x')setMode('pen');hintFor=null;showHintRings([]);renderUI();updateGhost()};return b}
 function renderUI(){
@@ -982,13 +1038,13 @@ function renderUI(){
     d.innerHTML=`${state[n]!==undefined?'<span class="ok"></span>':''}<div class="face" style="--c:${pcolor(n)}">${s.face}<i>${letter(n)}</i></div><div><div class="nm">${n}</div><div class="cl">${clueText(n)}</div></div>`;
     d.onclick=()=>{tool=n;if(mode==='x')setMode('pen');renderUI();$('#dossier').classList.remove('open')};c.appendChild(d)}
   $('#undoBtn').disabled=!hist.length||showSol;moveThumb();
-  requestAnimationFrame(resize);
+  requestAnimationFrame(resize);if(TUT)tutCheck();
 }
 function moveThumb(){const b=document.querySelector(`.seg.mode button[data-m="${mode}"]`),th=document.querySelector('.seg .thumb');if(!b||!th)return;th.style.width=b.offsetWidth+'px';th.style.transform=`translateX(${b.offsetLeft-3}px)`}
 function renderStatic(){
-  $('#caseNo').textContent=L.caseNo(P.seed);
+  const cn=TUT?L.tut.badge:L.caseNo(P.seed);$('#caseNo').textContent=cn;
   const vn=P.vic.name.replace(/^(\w)/,c=>c.toUpperCase());
-  $('#eyebrow').textContent=`${L.caseNo(P.seed)} · ${L.diff[P.diff]}`;$('#title').textContent=L.murderOf(vn);$('#sub').textContent=TH.subs[P.seed%TH.subs.length];
+  $('#eyebrow').textContent=`${cn} · ${L.diff[P.diff]}`;$('#title').textContent=L.murderOf(vn);$('#sub').textContent=TH.subs[P.seed%TH.subs.length];
   const types=[...new Set(P.M.obj.filter(Boolean))];
   const ord=[...types.filter(t=>OCC.has(t)),...types.filter(t=>!OCC.has(t))];
   $('#olist').innerHTML=ord.map(t=>`<button class="oi${OCC.has(t)?' y':''}" data-t="${t}" title="${L.ui.showOnBoard}"><span class="th">${THUMB[TH.id+':'+t]?`<img alt="" src="${THUMB[TH.id+':'+t]}">`:''}</span><span><b>${cap(oname(t))}</b><small>${OCC.has(t)?L.ui.occ:L.ui.blocks}</small></span></button>`).join('');
@@ -1010,7 +1066,7 @@ $('#moreBtn').onclick=e=>{e.stopPropagation();togglePop('#more','#moreBtn')};$('
 $('#newBtn').onclick=e=>{e.stopPropagation();togglePop('#newMenu','#newBtn')};
 document.addEventListener('click',e=>{if(!e.target.closest('.pop')&&!e.target.closest('#moreBtn,#newBtn'))closePops()});
 $('#more').addEventListener('click',e=>{if(e.target.closest('button'))setTimeout(closePops,0)});
-document.querySelectorAll('#newMenu .diff').forEach(b=>b.onclick=()=>{closePops();diff=b.dataset.d;newCase()});
+document.querySelectorAll('#newMenu .diff').forEach(b=>b.onclick=()=>{if(TUT){tutFb(L.tut.wait,'bad');return}closePops();diff=b.dataset.d;newCase()});
 $('#clearNotesBtn').onclick=()=>{if(!Object.keys(notes).length){toast(L.t.noNotes);return}snap();notes={};renderUI();save();toast(L.t.notesCleared)};
 $('#clearBtn').onclick=()=>{if(!Object.keys(state).length&&!Object.keys(marks).length&&!Object.keys(notes).length){toast(L.t.empty);return}
   snap();state={};marks={};notes={};if(showSol)toggleSol();syncPawns();renderUI();save();checkBoard();toast(L.t.cleared)};
@@ -1018,19 +1074,22 @@ function toggleSol(){if(solvedNow)return;showSol=!showSol;$('#solveBtn span').te
   if(showSol){if(!solved)revealedSol=true;setTop(false);toast(L.t.alone(P.killer,P.vic.name,roomInPlain(P.M.reg[P.sol[P.vic.name]])))}}
 let revealedSol=false;
 $('#solveBtn').onclick=toggleSol;
-function openAccuse(){if(showSol){toast(L.t.hideSol);return}
+function openAccuse(){if(showSol){toast(L.t.hideSol);return}if(TUT&&TUT.i<tutIdx('killer')){tutFb(L.tut.accuseLater,'bad');return}
   $('#accuseSub').textContent=complete()?(correct()?L.t.accComplete:L.t.accWrong):L.t.accLeft(people().filter(n=>state[n]===undefined).length);
   renderSuspects();$('#accuse').classList.add('on')}
 $('#accuseBtn').onclick=openAccuse;
 $('#accuseCancel').onclick=()=>$('#accuse').classList.remove('on');
 document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m&&m.id!=='win')m.classList.remove('on')}));
-function accuse(n){$('#accuse').classList.remove('on');
+function accuse(n){
+  // tutorial: a wrong pick keeps the list open, explains why, and is not counted
+  if(TUT&&n!==P.killer){tutFb(state[n]!==undefined?L.tut.alibi(n,roomOf(state[n])):L.t.alibi(n),'bad');buzz();return}
+  $('#accuse').classList.remove('on');
   if(n!==P.killer){if(!wrongAcc.includes(n))wrongAcc.push(n);save();toast(L.t.alibi(n),'bad');buzz();return}
   if(!complete()||!correct()){toast(L.t.guess);return}
   win()}
 // the reveal: lock the board, tip the victim over, light the killer, fly in, then the verdict
 function win(){$('#toast').classList.remove('on');solved=true;solvedNow=true;tool=null;closePops();$('#accuseBtn').classList.remove('ready');$('#timer').classList.add('solved');
-  try{localStorage.setItem('murdoku2:solved:'+P.diff+':'+P.seed,JSON.stringify({t:elapsed,hints,wrong:wrongAcc.length,peek:revealedSol}))}catch(e){}
+  if(!TUT)try{localStorage.setItem('murdoku2:solved:'+P.diff+':'+P.seed,JSON.stringify({t:elapsed,hints,wrong:wrongAcc.length,peek:revealedSol}))}catch(e){}
   syncPawns();renderUI();const v=cellPos(state[P.vic.name]),k=cellPos(state[P.killer]);
   flyTo(false,1600,false,v.clone().lerp(k,.5));
   for(const n in pawns)if(n!==P.killer&&n!==P.vic.name){const pw=pawns[n];tween(600,t=>pw.userData.m.color.set(pcolor(n)).lerp(new THREE.Color('#333'),t*.6))}
@@ -1040,8 +1099,8 @@ function showWin(){const s=person(P.killer);
   $('#winTxt').textContent=L.t.alone(P.killer,P.vic.name,roomInPlain(P.M.reg[P.sol[P.vic.name]]));
   const lvl=L.diff[P.diff];
   $('#winStats').innerHTML=`<div><b>${fmtTime(elapsed)}</b><small>${L.ui.time}</small></div><div><b>${hints}</b><small>${L.ui.hints}</small></div><div><b>${wrongAcc.length}</b><small>${L.ui.misses}</small></div><div><b>${P.M.N}×${P.M.N}</b><small>${lvl}</small></div>`;
-  $('#win').classList.add('on')}
-$('#winNext').onclick=()=>{$('#win').classList.remove('on');newCase()};
+  $('#win').classList.add('on');if(TUT)TUT.winSeen=true}
+$('#winNext').onclick=()=>{$('#win').classList.remove('on');if(!TUT)newCase()};
 $('#winLook').onclick=()=>{$('#win').classList.remove('on');controls.enabled=true};
 function confetti(){const cols=['#e8c272','#e0503c','#3d8bfd','#2fbf71','#ffffff'];const g=new THREE.Group();world.add(g);const parts=[];const geo=new THREE.PlaneGeometry(.08,.14);
   const mats=cols.map(c=>new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide}));
@@ -1050,13 +1109,14 @@ function confetti(){const cols=['#e8c272','#e0503c','#3d8bfd','#2fbf71','#ffffff
     m.userData.r=new THREE.Vector3(Math.random()*.2,Math.random()*.2,Math.random()*.2);g.add(m);parts.push(m)}
   tween(5000,()=>{for(const m of parts){m.position.add(m.userData.v);m.rotation.x+=m.userData.r.x;m.rotation.y+=m.userData.r.y;m.position.x+=Math.sin(m.position.y*3)*.004}},()=>world.remove(g))}
 
-function save(){if(!P)return;try{localStorage.setItem('murdoku2:'+P.diff+':'+P.seed,JSON.stringify({state,marks,notes,t:elapsed,hints,wrong:wrongAcc,peek:revealedSol}));localStorage.setItem('murdoku2:last',location.hash)}catch(e){}}
+function save(){if(!P)return;try{if(TUT){if(TUT.F)localStorage.setItem(TK,JSON.stringify({step:TUT.i,state,marks,notes,hints,solved}));return}localStorage.setItem('murdoku2:'+P.diff+':'+P.seed,JSON.stringify({state,marks,notes,t:elapsed,hints,wrong:wrongAcc,peek:revealedSol}));localStorage.setItem('murdoku2:last',location.hash)}catch(e){}}
 setInterval(()=>{if(P&&started&&!solved)save()},5000);
 addEventListener('pagehide',save);
 // saves are keyed by name; suspect names are the same in every language but the victim's is not: map one unknown name onto the victim
 function fixNames(st){const ps=people(),bad=Object.keys(st).filter(n=>!ps.includes(n)),v=P.vic.name;
   if(bad.length===1&&!(v in st)){st[v]=st[bad[0]];delete st[bad[0]]}return st}
-function load(){try{const s=JSON.parse(localStorage.getItem('murdoku2:'+P.diff+':'+P.seed)||'null');if(s){state=fixNames(s.state||{});marks=s.marks||{};notes=s.notes||{};elapsed=s.t||0;hints=s.hints||0;wrongAcc=s.wrong||[];revealedSol=!!s.peek}
+function load(){try{if(TUT){const s=JSON.parse(localStorage.getItem(TK)||'null');if(s){state=fixNames(s.state||{});marks=s.marks||{};notes=s.notes||{};hints=s.hints||0;solved=!!s.solved}return}
+  const s=JSON.parse(localStorage.getItem('murdoku2:'+P.diff+':'+P.seed)||'null');if(s){state=fixNames(s.state||{});marks=s.marks||{};notes=s.notes||{};elapsed=s.t||0;hints=s.hints||0;wrongAcc=s.wrong||[];revealedSol=!!s.peek}
   solved=!!localStorage.getItem('murdoku2:solved:'+P.diff+':'+P.seed)}catch(e){}}
 
 let worker=null;
@@ -1080,24 +1140,26 @@ function applyTheme(g){const T=TH,ren={};
   for(const rm of g.M.rooms){const k=rm.key||rm.name;rm.key=k;const tr=T.rooms[k]||{};rm.name=tr.name||k;rm.art=tr.art;rm.color=tr.color||rm.color}
   return g}
 let curLook=null;
-async function openCase(seed,d){if(opening)return;opening=true;
-  TH=themeOf(seed);
+async function openCase(seed,d,tut){if(opening)return;opening=true;
+  // the tutorial always plays its own castle case; any other case ends it
+  if(!tut&&TUT)tutClose();TH=tut&&THEMES.find(t=>t.id==='castle')||themeOf(seed);
   $('#loader').classList.remove('off');$('#loadTxt').textContent=TH.loading||L.ui.plotting;$('#win').classList.remove('on');
-  let g=null;for(let k=0;k<5&&!g;k++){g=await genAsync(seed,d);if(!g)seed++}
+  let g=tut?JSON.parse(TUT_CASE):null;for(let k=0;k<5&&!g;k++){g=await genAsync(seed,d);if(!g)seed++}
   await fontsReady;opening=false;
   if(!g){$('#loader').classList.add('off');toast(L.t.failed,'bad');return}
   applyTheme(g);if(curLook!==TH){applyLook(TH.look);curLook=TH}document.body.dataset.theme=TH.id;
   P=g;diff=d;state={};marks={};notes={};hist.length=0;showSol=false;tool=null;hintFor=null;elapsed=0;lastSec=-1;hints=0;wrongAcc=[];solved=false;solvedNow=false;revealedSol=false;boardWasRight=false;
   $('#solveBtn span').textContent=L.ui.solution;
-  history.replaceState(null,'',`#${d}-${seed}`);load();started=Object.keys(state).length>0;
+  history.replaceState(null,'',tut?location.pathname+'?tutorial':location.pathname+location.search.replace(/[?&]tutorial(?=&|$)/,'').replace(/^&/,'?')+`#${d}-${seed}`);load();started=Object.keys(state).length>0;
   for(const r of hintRings)r.visible=false;if(ghost){ghost=null}
   buildWorld();renderStatic();mode='';setMode('pen');syncPawns(false);resize();save();
   $('#timer').textContent=fmtTime(elapsed);$('#timer').classList.toggle('solved',solved);
   boardWasRight=complete()&&correct();$('#accuseBtn').classList.toggle('ready',boardWasRight&&!solved);
-  $('#loader').classList.add('off');topView=false;camLabel();flyTo(false,2200,true);
-  if(solved)setTimeout(()=>toast(L.t.solvedBefore,'good'),2300);
-  else if(!localStorage.getItem('murdoku2:seen')){try{localStorage.setItem('murdoku2:seen','1')}catch(e){}
-    setTimeout(()=>{if(innerWidth<900)$('#dossier').classList.add('open');else toast(L.t.welcome)},2300)}
+  $('#loader').classList.add('off');topView=!!tut&&TUT.i>tutIdx('top');camLabel();flyTo(topView,2200,true);
+  if(tut)tutBegin();
+  else if(solved)setTimeout(()=>toast(L.t.solvedBefore,'good'),2300);
+  // first visit: offer the tutorial; skipping it opens the case file (phones) or shows the welcome line
+  else if(!localStorage.getItem('murdoku2:seen'))setTimeout(()=>{if(!TUT&&!opening&&!document.querySelector('.modal.on'))tutOffer()},1200);
 }
 let decor='all';try{decor=localStorage.getItem('murdoku2:decor')||'all'}catch(e){}
 function newCase(){const T=THEMES.length;let s=1+Math.floor(Math.random()*99999);const i=THEMES.findIndex(t=>t.id===decor);
@@ -1109,11 +1171,13 @@ renderDecor();
  document.querySelectorAll('#langs button').forEach(b=>b.onclick=()=>{if(b.dataset.l!==LANG&&window.switchLang)switchLang(b.dataset.l)})}
 function fromHash(){const m=/^#(easy|medium|hard)-(\d+)$/.exec(location.hash);if(m){openCase(+m[2],m[1]);return true}return false}
 addEventListener('hashchange',()=>{if(!P||location.hash!==`#${P.diff}-${P.seed}`)fromHash()});
+/*@TUTORIAL*/
 camera.position.set(0,20,20);resize();loop();
-if(!fromHash()){let last=null;try{last=localStorage.getItem('murdoku2:last')}catch(e){}
+if(/[?&]tutorial(&|$)/.test(location.search))tutStart(true);
+else if(!fromHash()){let last=null;try{last=localStorage.getItem('murdoku2:last')}catch(e){}
   if(last&&/^#(easy|medium|hard)-\d+$/.test(last))location.hash=last,fromHash();else openCase(75,'medium')}
 addEventListener('keydown',e=>{if(!P||e.target.closest('select,input,textarea'))return;const k=e.key.toUpperCase();
-  if(k==='ESCAPE'){if($('#accuse').classList.contains('on')){$('#accuse').classList.remove('on');return}if($('#dossier').classList.contains('open')){$('#dossier').classList.remove('open');return}closePops();tool=null;renderUI();updateGhost();return}
+  if(k==='ESCAPE'){if($('#tutOffer').classList.contains('on')){tutSkip();return}if($('#accuse').classList.contains('on')){$('#accuse').classList.remove('on');return}if($('#dossier').classList.contains('open')){$('#dossier').classList.remove('open');return}closePops();tool=null;renderUI();updateGhost();return}
   if(document.querySelector('.modal.on'))return;
   if((e.metaKey||e.ctrlKey)&&k==='Z'){e.preventDefault();undo();return}if(e.metaKey||e.ctrlKey||e.altKey)return;
   if(k==='Z')undo();else if(k==='N')setMode(mode==='notes'?'pen':'notes');else if(k==='X')setMode(mode==='x'?'pen':'x');
@@ -1122,7 +1186,7 @@ addEventListener('keydown',e=>{if(!P||e.target.closest('select,input,textarea'))
 window.feedbackContext=()=>({[L.fb.case]:P?`${P.diff}-${P.seed}`:"-",[L.fb.setting]:TH?TH.id:"-",[L.fb.mode]:mode,[L.fb.placed]:Object.keys(state||{}).length});
 window.__dbg={perf,get P(){return P},controls,composer,scene,get world(){return world},get TH(){return TH},tapCell,setMode,get notes(){return notes},get state(){return state},get pawns(){return pawns},camera,renderer,get tool(){return tool},set tool(v){tool=v;renderUI()},hint,
   cellScreen:i=>{const v=cellPos(i);v.y=baseY(i)+.05;v.project(camera);const r=canvas.getBoundingClientRect();return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}},
-  showType,find:()=>({on:!!find&&find.on,n:find?find.mesh.count:0,alpha:FIND_M.uniforms.uA.value,visible:!!find&&find.mesh.visible,pins:findPins.filter(p=>p.visible).length,focus:grade.uniforms.focus.value}),
+  showType,tut:()=>tutDbg(),rings:()=>({on:!!tring&&tring.on,n:tring?tring.mesh.count:0,visible:!!tring&&tring.mesh.visible}),find:()=>({on:!!find&&find.on,n:find?find.mesh.count:0,alpha:FIND_M.uniforms.uA.value,visible:!!find&&find.mesh.visible,pins:findPins.filter(p=>p.visible).length,focus:grade.uniforms.focus.value}),
   get busy(){return tweens.length},get mode(){return mode},get solved(){return solved},
   info:()=>({calls:renderer.info.render.calls,tris:renderer.info.render.triangles,geos:renderer.info.memory.geometries})};
 </script>

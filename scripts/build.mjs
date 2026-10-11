@@ -123,7 +123,7 @@ export function build() {
 
   for (const lang of Object.keys(LANGS)) {
     const p = prefix(lang);
-    write(p + '3d/index.html', translate(fill(read('src/3d/index.html'), lang, '3d/'), 'src/3d', lang).replace('/*@THEMES*/', () => themeSrc));
+    write(p + '3d/index.html', translate(fill(read('src/3d/index.html'), lang, '3d/'), 'src/3d', lang).replace('/*@THEMES*/', () => themeSrc).replace('/*@TUTORIAL*/', () => read('src/3d/tutorial.js')));
     write(p + 'classic/index.html', translate(fill(read('src/classic/index.html'), lang, 'classic/'), 'src/classic', lang));
   }
 
