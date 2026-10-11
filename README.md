@@ -1,14 +1,14 @@
-# Murder Sudoku
+# Murder Sudoku 3D
 
-**Whodunit?** Murder Sudoku is a free murder mystery logic puzzle in your browser. Place the suspects on the floor plan, follow their clues, and unmask the killer.
+**Whodunit?** Murder Sudoku 3D is a free murder mystery logic puzzle in your browser. Place the suspects on the floor plan, follow their clues, and unmask the killer.
 
 **[Play now](https://jeroenmarchand.github.io/murder-sudoku/)** · [3D](https://jeroenmarchand.github.io/murder-sudoku/3d/) · [Classic and printable](https://jeroenmarchand.github.io/murder-sudoku/classic/) · [Nederlands](https://jeroenmarchand.github.io/murder-sudoku/nl/)
 
-![Murder Sudoku in 3D](src/site/img/og.jpg)
+![Murder Sudoku 3D](src/site/img/og.jpg)
 
 - Endless cases, each with exactly one solution
 - Three levels (6×6, 8×8, and 9×9) and six 3D settings
-- Works on phone, tablet, and computer, with no account and no ads
+- Works on phone, tablet, and computer, with no account and no ads, and offline once installed
 - Printable version with the solution on a separate page
 - Available in English and Dutch, and open to more languages
 
@@ -52,11 +52,15 @@ The repository is set up for coding agents such as Claude Code, Codex, Copilot, 
 | `src/classic/` | The classic 2D version with printing, text per language in `i18n/` |
 | `src/site/` | Landing pages (English at the root, other languages in a folder per language), images, and static files |
 | `src/shared/feedback.js` | The feedback dialog that prefills a GitHub issue |
-| `scripts/` | Build (`build.mjs`), dev server, and screenshots |
+| `scripts/` | Build (`build.mjs`), dev server, screenshots, and app icons (`icons.mjs`) |
 | `tests/` | Generator tests, smoke tests per page, language, and setting, and a full play-through |
 
 There is no framework and no bundler, and no server: `npm run build` combines the files into static HTML in `dist/`, once per language. Every push to `main` is published to GitHub Pages after the tests pass.
 
 ## License
 
-[PolyForm Noncommercial 1.0.0](LICENSE): free for noncommercial use. Jeroen Marchand holds the copyright and can offer commercial licenses. Murder Sudoku is an independent project. All puzzles come from its own generator.
+[PolyForm Noncommercial 1.0.0](LICENSE). You're free to play, study, change, and share Murder Sudoku 3D for any noncommercial purpose, including personal use, teaching, research, and charities. Selling it, putting it behind ads, or using it in a commercial product isn't allowed without permission. Want to use it commercially? Open an issue.
+
+Bundled third-party code keeps its own license: three.js (MIT) and the Cinzel, EB Garamond, and Inter fonts (SIL Open Font License).
+
+Murder Sudoku 3D is an independent project. All puzzles come from its own generator.

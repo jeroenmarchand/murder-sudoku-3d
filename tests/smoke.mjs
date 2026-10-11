@@ -9,15 +9,22 @@ const DUTCH = /\b(Oplossing|Aanwijzing|Verdachten?|Slachtoffer|Nieuwe zaak|Makke
 let fails = 0;
 const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fails++ };
 const { browser, url, stop } = await start();
-const page = async (vp = { width: 1280, height: 800 }, locale = 'en-US') => { const ctx = await browser.newContext({ viewport: vp, locale }); const p = await ctx.newPage(); return { ctx, p, errs: watchErrors(p) } };
+// every page also records requests to other hosts: the site must work offline, so nothing may load from a CDN
+const page = async (vp = { width: 1280, height: 800 }, locale = 'en-US') => {
+  const ctx = await browser.newContext({ viewport: vp, locale }); const p = await ctx.newPage(); const ext = [];
+  p.on('request', r => { const u = new URL(r.url()); if (/^https?:$/.test(u.protocol) && u.origin !== new URL(url).origin) ext.push(u.href) });
+  return { ctx, p, errs: watchErrors(p), ext };
+};
+// width and height of a PNG, from its IHDR chunk
+const pngSize = b => b.length > 24 && b.toString('latin1', 1, 4) === 'PNG' ? `${b.readUInt32BE(16)}x${b.readUInt32BE(20)}` : null;
 const leftovers = html => (html.match(/__[A-Z]+__|\{\{t:[\w.]+\}\}|<!--(CORE|FEEDBACK|HREFLANG)-->|\/\*@(LANG|THEMES)\*\//g) || []);
 
 try {
   for (const [lang, pre] of Object.entries(LANGS)) {
     console.log(`== landing (${lang})`);
-    const { ctx, p, errs } = await page(undefined, lang);
+    const { ctx, p, errs, ext } = await page(undefined, lang);
     await p.goto(url + pre);
-    ok(/Murder Sudoku/.test(await p.title()), `${lang}: title mentions Murder Sudoku`);
+    ok(/Murder Sudoku 3D/.test(await p.title()), `${lang}: title mentions Murder Sudoku 3D`);
     ok(await p.getAttribute('html', 'lang') === lang, `${lang}: html lang`);
     ok(await p.locator('link[rel=alternate][hreflang]').count() === 3, `${lang}: hreflang links`);
     JSON.parse(await p.locator('script[type="application/ld+json"]').textContent());
@@ -37,6 +44,50 @@ try {
     ok(u.searchParams.get('template') === 'puzzle.yml' && u.searchParams.get('title') === 'Test title' && u.searchParams.get('description') === 'Something is off' && /(Page|Pagina):/.test(u.searchParams.get('context')), `${lang}: issue is prefilled`);
     for (const t of ['bug', 'puzzle', 'idea']) ok(fs.existsSync(new URL(`../.github/ISSUE_TEMPLATE/${t}.yml`, import.meta.url)), `issue template ${t}.yml exists`);
     ok(errs.length === 0, `${lang}: no errors ` + errs.join(' | '));
+    ok(ext.length === 0, `${lang}: no requests to other hosts ` + ext.join(' '));
+    ok(!await p.evaluate(() => navigator.serviceWorker.getRegistration().then(Boolean)), `${lang}: no service worker on localhost without ?sw`);
+    await ctx.close();
+  }
+
+  console.log('== manifest and icons');
+  {
+    const { ctx, p } = await page();
+    await p.goto(url);
+    const get = async u => { const r = await p.request.get(new URL(u, url).href); return { status: r.status(), body: await r.body() } };
+    const m = JSON.parse((await get(await p.getAttribute('link[rel=manifest]', 'href'))).body.toString());
+    ok(/Murder Sudoku 3D/.test(m.name) && m.short_name.length <= 12, `manifest name "${m.name}", short name "${m.short_name}"`);
+    ok(m.icons.some(i => i.purpose === 'maskable') && m.icons.some(i => i.sizes === '192x192') && m.icons.some(i => i.sizes === '512x512'), 'manifest has 192, 512, and maskable icons');
+    for (const i of m.icons) {
+      const r = await get(new URL(i.src, new URL('site.webmanifest', url)).href);
+      ok(r.status === 200 && (i.type !== 'image/png' || pngSize(r.body) === i.sizes), `icon ${i.src} resolves (${i.type === 'image/png' ? pngSize(r.body) : i.type})`);
+    }
+    for (const pg of ['', 'nl/', '3d/', 'nl/3d/', 'classic/']) {
+      await p.goto(url + pg);
+      const href = await p.getAttribute('link[rel=apple-touch-icon]', 'href');
+      const r = await get(new URL(href, p.url()).href);
+      ok(r.status === 200 && pngSize(r.body) === '180x180' && await p.locator('meta[name=theme-color]').count() === 1, `${pg || '/'}: apple-touch-icon and theme-color`);
+    }
+    await ctx.close();
+  }
+
+  console.log('== service worker (offline)');
+  {
+    const { ctx, p, errs } = await page();
+    await p.addInitScript(() => localStorage.setItem('murdoku2:seen', '1'));
+    await p.goto(url + '?sw');
+    const scope = await p.evaluate(() => navigator.serviceWorker.ready.then(r => r.scope));
+    ok(scope === url, 'registers on the landing page with ?sw, scoped to the site root ' + scope);
+    const cached = await p.evaluate(async () => { const c = await caches.open((await caches.keys()).find(k => k.startsWith('murdoku-'))); return (await c.keys()).map(r => r.url) });
+    ok(['3d/', 'nl/3d/', 'classic/', 'nl/classic/', 'vendor/three/build/three.module.min.js', 'vendor/fonts/fonts.css'].every(u => cached.includes(url + u)), `precaches the app shell (${cached.length} files)`);
+    await ctx.setOffline(true);
+    await p.goto(url + '3d/?sw&theme=castle#easy-12');
+    await ready3d(p);
+    ok(await p.evaluate(() => __dbg.TH.id) === 'castle', 'offline: the 3D app loads and builds a case');
+    ok(await p.evaluate(() => document.fonts.check('700 16px Cinzel') && [...document.fonts].some(f => f.family.replace(/"/g, '') === 'Cinzel' && f.status === 'loaded')), 'offline: Cinzel is loaded');
+    await p.goto(url + 'nl/classic/?sw#easy-12');
+    await p.waitForFunction(() => document.querySelectorAll('#cards > *').length > 0, null, { timeout: 30000 });
+    ok(true, 'offline: the Dutch classic page loads');
+    ok(errs.length === 0, 'offline: no errors ' + errs.join(' | '));
     await ctx.close();
   }
 
@@ -55,7 +106,7 @@ try {
 
   for (const [lang, pre] of Object.entries(LANGS)) {
     console.log(`== classic (${lang})`);
-    const { ctx, p, errs } = await page(undefined, lang);
+    const { ctx, p, errs, ext } = await page(undefined, lang);
     await p.goto(url + pre + 'classic/#easy-12');
     await p.waitForFunction(() => document.querySelectorAll('#cards > *').length > 0, null, { timeout: 30000 });
     ok(await p.getAttribute('html', 'lang') === lang, `${lang}: case renders, html lang`);
@@ -63,6 +114,7 @@ try {
     ok(await p.locator('[data-feedback]').count() >= 1, `${lang}: feedback link present`);
     if (lang === 'en') ok(!DUTCH.test(await p.locator('body').innerText()), 'en: no Dutch on the page ' + ((await p.locator('body').innerText()).match(DUTCH) || [''])[0]);
     ok(errs.length === 0, `${lang}: no errors ` + errs.join(' | '));
+    ok(ext.length === 0, `${lang}: no requests to other hosts ` + ext.join(' '));
     await ctx.close();
   }
 
@@ -81,7 +133,7 @@ try {
   console.log('== 3d settings');
   for (const [lang, pre] of Object.entries(LANGS)) for (const id of THEMES) {
     if (lang !== 'en' && id !== 'castle') continue; // Dutch is the source text; one setting is enough
-    const { ctx, p, errs } = await page(undefined, lang);
+    const { ctx, p, errs, ext } = await page(undefined, lang);
     await p.addInitScript(() => localStorage.setItem('murdoku2:seen', '1'));
     await p.goto(`${url}${pre}3d/?theme=${id}#easy-12`);
     await ready3d(p);
@@ -105,6 +157,8 @@ try {
       ok(new RegExp(`${lang === 'nl' ? 'Zaak' : 'Case'}:\\*\\* easy-12`).test(prev), `${lang} castle: feedback includes the case number`);
     }
     ok(errs.length === 0, `${lang} ${id}: no errors ` + errs.join(' | '));
+    ok(ext.length === 0, `${lang} ${id}: no requests to other hosts ` + ext.join(' '));
+    if (id === 'castle') ok(/Murder Sudoku 3D/.test(await p.title()), `${lang} castle: title mentions Murder Sudoku 3D`);
     await ctx.close();
   }
 } catch (e) { console.error(e); fails++ }

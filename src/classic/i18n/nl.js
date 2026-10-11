@@ -1,9 +1,9 @@
 // Dutch strings for the classic (2D) version. Keys of rooms, obj, and victims are the internal names from src/core.js.
 const L={
   meta:{
-    title:'Murder Sudoku klassiek · moordpuzzels maken en printen',
+    title:'Klassieke murder sudoku · moordpuzzels maken en printen | Murder Sudoku 3D',
     desc:'Maak gratis logische moordpuzzels in drie niveaus en druk ze af. Plaats de verdachten, volg de aanwijzingen en vind de dader. Elke zaak heeft precies één oplossing.',
-    ogTitle:'Murder Sudoku: moordpuzzels om te printen',
+    ogTitle:'Moordpuzzels om te printen · Murder Sudoku 3D',
     ogDesc:'Gratis logische moordpuzzels, oneindig veel zaken, klaar om af te drukken.',
     locale:'nl_NL'
   },
@@ -14,7 +14,7 @@ const L={
     canOcc:'Kunnen worden bezet',cannotOcc:'Kunnen niet worden bezet',crossOut:'Vak schrappen',eraser:'Gum',
     busy:'Nieuwe zaak wordt bedacht…',
     footer:'Kies een verdachte of ✕ onder het bord en tik op een vak. Elke zaak heeft precies één oplossing. Deel de link om dezelfde zaak te delen.',
-    play3d:'Speel in 3D',feedback:'Feedback',about:'Over Murder Sudoku',source:'Broncode',language:'Taal'
+    play3d:'Speel in 3D',feedback:'Feedback',about:'Over Murder Sudoku 3D',source:'Broncode',language:'Taal'
   },
   rules:`<li>Iedere persoon staat in een eigen <b>rij</b> en een eigen <b>kolom</b>.</li>
 <li>Je kunt alleen op een leeg vak of op een object uit het groene vak staan.</li>

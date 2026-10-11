@@ -1,7 +1,7 @@
 # Murder Sudoku 3D: writing a setting (theme)
 
-Murder Sudoku is a logic puzzle with a multilingual UI (English at the root, Dutch under `/nl/`). The brand
-is "Murder Sudoku" in every language. A generated case is a board of N×N tiles (N = 6, 8, or 9)
+Murder Sudoku 3D is a logic puzzle with a multilingual UI (English at the root, Dutch under `/nl/`). The brand
+is "Murder Sudoku 3D" in every language. A generated case is a board of N×N tiles (N = 6, 8, or 9)
 split into rooms by low walls, with furniture objects on some tiles. A setting re-skins the whole
 3D world: sky, light, scenery around the board, floor textures, wall colours, every object model,
 the names of rooms, people, and objects. The puzzle logic never changes.

@@ -1,8 +1,8 @@
 {
-  "name": "Murder Sudoku",
+  "name": "Murder Sudoku 3D",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
   "postCreateCommand": "npm ci && npx playwright install --with-deps chromium",
   "forwardPorts": [5173],
-  "portsAttributes": { "5173": { "label": "Murder Sudoku", "onAutoForward": "openPreview" } },
+  "portsAttributes": { "5173": { "label": "Murder Sudoku 3D", "onAutoForward": "openPreview" } },
   "customizations": { "codespaces": { "openFiles": ["README.md"] } }
 }

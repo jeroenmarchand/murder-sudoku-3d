@@ -1,9 +1,9 @@
 // English strings for the classic (2D) version. Keys of rooms, obj, and victims are the internal names from src/core.js.
 const L={
   meta:{
-    title:'Murder Sudoku classic · make and print murder mystery logic puzzles',
+    title:'Classic murder sudoku · make and print murder mystery logic puzzles | Murder Sudoku 3D',
     desc:'Make free murder mystery logic puzzles in three difficulty levels and print them. Place the suspects, follow the clues, and find the killer. Every case has exactly one solution.',
-    ogTitle:'Murder Sudoku: printable murder mystery puzzles',
+    ogTitle:'Printable murder sudoku puzzles · Murder Sudoku 3D',
     ogDesc:'Free murder mystery logic puzzles, endless cases, ready to print.',
     locale:'en_US'
   },
@@ -14,7 +14,7 @@ const L={
     canOcc:'Can be occupied',cannotOcc:'Can’t be occupied',crossOut:'Cross out a square',eraser:'Eraser',
     busy:'Coming up with a new case…',
     footer:'Pick a suspect or ✕ below the board, then tap a square. Every case has exactly one solution. Share the link, and others play the same case.',
-    play3d:'Play in 3D',feedback:'Feedback',about:'About Murder Sudoku',source:'Source code',language:'Language'
+    play3d:'Play in 3D',feedback:'Feedback',about:'About Murder Sudoku 3D',source:'Source code',language:'Language'
   },
   rules:`<li>Each person is in their own <b>row</b> and their own <b>column</b>.</li>
 <li>People stand only on an empty square or on an object from the green box.</li>

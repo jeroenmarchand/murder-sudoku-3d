@@ -57,7 +57,7 @@ for (const id of THEMES) {
   await p.setContent(`<style>body{margin:0;width:1200px;height:630px;background:#120e1c url(${bg}) center 40%/cover;font-family:Georgia,serif;color:#f6e7c8;display:flex;align-items:flex-end}
     div{width:100%;padding:44px 56px;background:linear-gradient(transparent,rgba(10,7,16,.92) 45%)}
     h1{margin:0;font-size:84px;letter-spacing:.02em}p{margin:6px 0 0;font:500 32px system-ui,sans-serif;color:#e8d3a6}</style>
-    <div><h1>Murder Sudoku</h1><p>Whodunit? Free murder mystery logic puzzles in 3D</p></div>`);
+    <div><h1>Murder Sudoku 3D</h1><p>Whodunit? Free murder mystery logic puzzles</p></div>`);
   await p.waitForTimeout(300);
   await p.screenshot({ path: `${OUT}og.png` });
   toJpg(`${OUT}og.png`, `${OUT}og.jpg`, 1200);

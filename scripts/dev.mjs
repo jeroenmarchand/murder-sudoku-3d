@@ -9,4 +9,4 @@ const { url } = await serve(port, req => {
     try { build() } catch (e) { console.error(e) }
   }
 });
-console.log(`Murder Sudoku dev server: ${url}\n  3D:      ${url}3d/   (Dutch: ${url}nl/3d/)\n  Classic: ${url}classic/\n  Tip: ${url}3d/?theme=space#medium-75 forces a setting and a case.`);
+console.log(`Murder Sudoku 3D dev server: ${url}\n  3D:      ${url}3d/   (Dutch: ${url}nl/3d/)\n  Classic: ${url}classic/\n  Tip: ${url}3d/?theme=space#medium-75 forces a setting and a case.`);

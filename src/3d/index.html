@@ -9,15 +9,16 @@
 <link rel="canonical" href="__URL__">
 <!--HREFLANG-->
 <link rel="icon" href="__ROOT__favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="__ROOT__img/icons/apple-touch-icon.png">
 <link rel="manifest" href="__ROOT__site.webmanifest">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Murder Sudoku">
+<meta property="og:site_name" content="Murder Sudoku 3D">
 <meta property="og:title" content="{{t:meta.ogTitle}}">
 <meta property="og:description" content="{{t:meta.ogDesc}}">
 <meta property="og:image" content="__SITE__img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="__ROOT__vendor/fonts/fonts.css">
+<!--SW-->
 <style>
 :root{
   --bg0:#0b0915;--bg1:#17132a;--bg2:#2a2246;
@@ -282,7 +283,7 @@ details.rules[open] summary svg{transform:rotate(180deg)}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"__ROOT__vendor/three/build/three.module.min.js","three/addons/":"__ROOT__vendor/three/examples/jsm/"}}</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute">

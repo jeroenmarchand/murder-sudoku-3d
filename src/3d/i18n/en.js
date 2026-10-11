@@ -1,12 +1,12 @@
 // English text for the 3D app. Plain strings are used at build time (t:key placeholders in index.html),
 // functions at runtime. Keep keys in sync with nl.js.
 const L={
-  brand:'Murder Sudoku',
+  brand:'Murder Sudoku 3D',
   meta:{title:'Murder Sudoku 3D · Free murder mystery puzzles online',
     desc:'Solve a murder with pure logic. Place the suspects on a 3D floor plan, follow the clues, and unmask the killer. Free, no account needed, on phone, tablet, and computer.',
     ogTitle:'Murder Sudoku 3D: who is the murderer?',ogDesc:'Free murder mystery logic puzzles in 3D. Six settings, three levels, endless cases.'},
   ui:{title:'Murder in the castle',timer:'Time played',cam:'Switch camera',camKey:'Switch camera (C)',top:'Top view',doss:'Case file',dossOpen:'Open case file',
-    newCase:'New case',setting:'Setting',close:'Close',objects:'Objects',rules:'Rules',print:'Printable version',feedback:'Feedback',about:'About Murder Sudoku',
+    newCase:'New case',setting:'Setting',close:'Close',objects:'Objects',rules:'Rules',print:'Printable version',feedback:'Feedback',about:'About Murder Sudoku 3D',
     input:'Input mode',pawn:'Pawn',pawnKey:'Place pawns (N toggles)',note:'Note',noteKey:'Take notes (N)',cross:'Cross',crossKey:'Cross out squares (X)',
     undo:'Undo',undoKey:'Undo (Z)',hint:'Hint',hintKey:'Hint (H)',more:'More',accuse:'Accuse',
     solution:'Show solution',hideSolution:'Hide solution',clearNotes:'Clear notes',clearAll:'Clear all',language:'Language',

@@ -1,12 +1,12 @@
 // Dutch text for the 3D app. Plain strings are used at build time (t:key placeholders in index.html),
 // functions at runtime. Keep keys in sync with en.js.
 const L={
-  brand:'Murder Sudoku',
+  brand:'Murder Sudoku 3D',
   meta:{title:'Murder Sudoku 3D · speel gratis moordpuzzels online',
     desc:'Los een moord op met pure logica. Plaats de verdachten in een 3D-plattegrond, volg de aanwijzingen en ontmasker de dader. Gratis, zonder account, op telefoon, tablet en computer.',
     ogTitle:'Murder Sudoku 3D: wie is de moordenaar?',ogDesc:'Gratis logische moordpuzzels in 3D. Zes decors, drie niveaus, oneindig veel zaken.'},
   ui:{title:'Moord in de burcht',timer:'Speeltijd',cam:'Wissel camera',camKey:'Wissel camera (C)',top:'Boven',doss:'Dossier',dossOpen:'Dossier openen',
-    newCase:'Nieuwe zaak',setting:'Decor',close:'Sluiten',objects:'Voorwerpen',rules:'Spelregels',print:'Afdrukbare versie',feedback:'Feedback',about:'Over Murder Sudoku',
+    newCase:'Nieuwe zaak',setting:'Decor',close:'Sluiten',objects:'Voorwerpen',rules:'Spelregels',print:'Afdrukbare versie',feedback:'Feedback',about:'Over Murder Sudoku 3D',
     input:'Invoer',pawn:'Pion',pawnKey:'Pion plaatsen (N wisselt)',note:'Notitie',noteKey:'Notities maken (N)',cross:'Kruis',crossKey:'Vakken schrappen (X)',
     undo:'Ongedaan maken',undoKey:'Ongedaan maken (Z)',hint:'Hint',hintKey:'Hint (H)',more:'Meer',accuse:'Beschuldig',
     solution:'Oplossing',hideSolution:'Verberg oplossing',clearNotes:'Wis notities',clearAll:'Wis alles',language:'Taal',

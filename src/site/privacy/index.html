@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy · Murder Sudoku 3D</title>
+<meta name="description" content="How Murder Sudoku 3D handles your data: anonymous usage statistics on the website, no cookies, no accounts, and your progress stays on your device.">
+<link rel="canonical" href="__URL__">
+<!--HREFLANG-->
+<meta name="theme-color" content="#140f22">
+<link rel="icon" href="__ROOT__favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="__ROOT__img/icons/apple-touch-icon.png">
+<link rel="manifest" href="__ROOT__site.webmanifest">
+<link rel="stylesheet" href="__ROOT__vendor/fonts/fonts.css">
+<!--SW-->
+<style>
+:root{--bg:#120d1e;--line:rgba(255,255,255,.1);--card:rgba(255,255,255,.045);--ink:#f3ebdc;--ink2:#c7bba8;--ink3:#948a7c;--gold:#e4c07a;--gold-hi:#f6dfa6;--gold-ink:#2a1c08}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 700px at 70% -10%,#3a2a5c 0,transparent 60%),radial-gradient(900px 600px at -10% 30%,#2a1d3f 0,transparent 60%),var(--bg);color:var(--ink);font:16px/1.65 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--gold-hi)}
+.wrap{width:min(1120px,100% - 40px);margin:0 auto}
+h1,h2{font-family:Cinzel,Georgia,serif;letter-spacing:.01em;line-height:1.15;margin:0}
+h1{font-size:clamp(32px,5vw,48px);margin-bottom:12px}
+h2{font-size:22px;margin:36px 0 8px}
+.nav{position:sticky;top:0;z-index:10;background:rgba(18,13,30,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.nav .wrap{display:flex;align-items:center;gap:18px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font:700 18px Cinzel,serif;color:var(--ink);text-decoration:none;margin-right:auto;white-space:nowrap}
+.logo img{width:28px;height:28px}
+.btn{display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;font:600 14px Inter,sans-serif;text-decoration:none;white-space:nowrap;background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:var(--gold-ink)}
+main .wrap{max-width:760px;padding:56px 0 72px}
+.lead{color:var(--ink2);font-size:18px}
+main p,main li{color:var(--ink2)}
+main ul{padding-left:20px}
+main li{margin:6px 0}
+main li b{color:var(--ink)}
+.date{color:var(--ink3);font-size:14px}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--ink3);font-size:14px}
+footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer a{color:var(--ink2)}
+footer .langs a{text-decoration:none}footer .langs a[aria-current]{color:var(--ink);font-weight:600}
+@media(max-width:440px){.logo{font-size:16px;gap:8px}}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Main menu"><div class="wrap">
+  <a class="logo" href="../"><img src="__ROOT__favicon.svg" alt="" width="28" height="28">Murder Sudoku 3D</a>
+  <a class="btn" href="../3d/">Play now</a>
+</div></nav>
+
+<main><div class="wrap">
+  <h1>Privacy</h1>
+  <p class="lead">Murder Sudoku 3D is a free puzzle game without accounts, ads, or tracking. This page explains the little data that is involved.</p>
+  <p class="date">Last updated: October 11, 2026</p>
+
+  <h2>On the website</h2>
+  <p>The website uses <a href="https://posthog.com/">PostHog</a>, hosted in the EU, for anonymous usage statistics, such as which pages are viewed and how many games are started or solved. These numbers show what to improve.</p>
+  <ul>
+    <li><b>No cookies.</b> The statistics work without cookies.</li>
+    <li><b>No personal profiles.</b> Visits are not linked to you, and your IP address is not stored.</li>
+    <li><b>No ads, and no selling of data.</b> The data is used only to improve the game.</li>
+    <li><b>Do Not Track is respected.</b> If your browser sends a Do Not Track signal, no statistics are collected at all.</li>
+  </ul>
+  <p>The website is hosted on GitHub Pages. GitHub may log technical data, such as your IP address, to keep the service secure. See the <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub Privacy Statement</a>.</p>
+
+  <h2>Your progress</h2>
+  <p>There are no accounts. Your progress, settings, and language choice are saved only on your own device, in your browser's local storage. Nothing is sent to a server. Clearing your browser data deletes them.</p>
+
+  <h2>Feedback</h2>
+  <p>The feedback button opens a prefilled form on GitHub in your browser. If you submit it, your message is public and the <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub Privacy Statement</a> applies.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about privacy? <a href="https://github.com/__REPO__/issues">Open an issue on GitHub</a>.</p>
+</div></main>
+
+<footer><div class="wrap">
+  <span>© Murder Sudoku 3D · free for noncommercial use (<a href="https://github.com/__REPO__/blob/main/LICENSE">license</a>) · an independent project</span>
+  <span><a href="../">Home</a> · <a href="../3d/">Play in 3D</a> · <a href="https://github.com/__REPO__">GitHub</a></span>
+  <nav class="langs" id="langs" aria-label="Language"></nav>
+</div></footer>
+<script>{const P=window.PAGE_LANGS,N=window.LANG_NAMES,cur=document.documentElement.lang;
+if(P)document.getElementById('langs').innerHTML=Object.keys(P).map(l=>`<a href="${P[l]}" hreflang="${l}" lang="${l}"${l===cur?' aria-current="true"':''} onclick="switchLang('${l}');return false">${N[l]}</a>`).join(' · ')}</script>
+</body>
+</html>

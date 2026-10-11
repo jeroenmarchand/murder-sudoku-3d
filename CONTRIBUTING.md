@@ -1,4 +1,4 @@
-# Contributing to Murder Sudoku
+# Contributing to Murder Sudoku 3D
 
 Thanks for helping. This guide explains how a contribution goes from idea to live. Issues and pull requests are welcome in English or Dutch.
 
@@ -33,7 +33,7 @@ To add a language, copy the English files, translate them, and add the language 
 ## Agreements
 
 - **Language:** every player-facing string goes through the translation files, in every supported language. Code, comments, and commit messages are in English.
-- **No external assets:** models and textures are procedural (geometry and canvas). Don't load images, models, or sounds from other sites.
+- **No external assets:** models and textures are procedural (geometry and canvas). Don't load anything from other sites at runtime: three.js and the fonts are served from `vendor/`, so the game also works offline and in the app.
 - **Puzzle logic:** changes to `src/core.js` change the puzzle behind every case number. Only do this when needed, and mention it in your pull request.
 - **Performance:** the game must run smoothly on an ordinary phone. Keep the number of draw calls low (see [docs/THEMES.md](docs/THEMES.md)).
 - **Originality:** don't use names, puzzles, text, or images from existing puzzle books or games. All puzzles come from the project's own generator.
@@ -44,4 +44,4 @@ Agents read [AGENTS.md](AGENTS.md) automatically. Check the result in the browse
 
 ## License
 
-By contributing, you agree that your contribution is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE), like the rest of the project. You also grant Jeroen Marchand a perpetual, worldwide, royalty-free, irrevocable license to use, change, sublicense, and distribute your contribution under any terms, including commercial ones. You confirm that the contribution is your own work and that you have the right to grant this.
+By contributing, you agree that your contribution is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE), like the rest of the project, and that the maintainer may also license it under other terms.
