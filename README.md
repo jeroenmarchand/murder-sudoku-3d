@@ -2,7 +2,7 @@
 
 **Whodunit?** Murder Sudoku is a free murder mystery logic puzzle in your browser. Place the suspects on the floor plan, follow their clues, and unmask the killer.
 
-**[Play now](https://jeroenmarchand.github.io/murder-sudoku/)** · [3D](https://jeroenmarchand.github.io/murder-sudoku/3d/) · [Classic and printable](https://jeroenmarchand.github.io/murder-sudoku/classic/) · [Nederlands](https://jeroenmarchand.github.io/murder-sudoku/nl/)
+**[Play now](https://jeroenmarchand.github.io/murder-sudoku-3d/)** · [3D](https://jeroenmarchand.github.io/murder-sudoku-3d/3d/) · [Classic and printable](https://jeroenmarchand.github.io/murder-sudoku-3d/classic/) · [Nederlands](https://jeroenmarchand.github.io/murder-sudoku-3d/nl/)
 
 ![Murder Sudoku in 3D](src/site/img/og.jpg)
 
@@ -21,7 +21,7 @@ Every suspect gets their own row and column, like sudoku. Each suspect has a clu
 Everyone can help, with or without programming experience:
 
 - **Send feedback:** in the game, open the menu with the three dots and choose **Feedback**. The dialog fills in a GitHub issue for you, including the case number. You need a free GitHub account to submit it.
-- **Pick up an issue:** look for the [`good first issue`](https://github.com/jeroenmarchand/murder-sudoku/labels/good%20first%20issue) label.
+- **Pick up an issue:** look for the [`good first issue`](https://github.com/jeroenmarchand/murder-sudoku-3d/labels/good%20first%20issue) label.
 - **Add a language:** see [Translations](CONTRIBUTING.md#translations).
 - **Build a new 3D setting:** follow [docs/THEMES.md](docs/THEMES.md). One file per setting.
 
@@ -30,8 +30,8 @@ Everyone can help, with or without programming experience:
 You need [Node.js](https://nodejs.org) 20 or later.
 
 ```sh
-git clone https://github.com/jeroenmarchand/murder-sudoku
-cd murder-sudoku
+git clone https://github.com/jeroenmarchand/murder-sudoku-3d
+cd murder-sudoku-3d
 npm install
 npm run dev     # open http://localhost:5173
 npm test        # builds the site and runs all tests
