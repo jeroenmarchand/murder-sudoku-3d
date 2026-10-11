@@ -33,7 +33,7 @@ To add a language, copy the English files, translate them, and add the language 
 ## Agreements
 
 - **Language:** every player-facing string goes through the translation files, in every supported language. Code, comments, and commit messages are in English.
-- **No external assets:** models and textures are procedural (geometry and canvas). Don't load anything from other sites at runtime: three.js and the fonts are served from `vendor/`, so the game also works offline and in the app.
+- **No external assets:** models and textures are procedural (geometry and canvas). Don't load anything from other sites at runtime: three.js and the fonts are served from `vendor/`, so the game also works offline.
 - **Puzzle logic:** changes to `src/core.js` change the puzzle behind every case number. Only do this when needed, and mention it in your pull request.
 - **Performance:** the game must run smoothly on an ordinary phone. Keep the number of draw calls low (see [docs/THEMES.md](docs/THEMES.md)).
 - **Originality:** don't use names, puzzles, text, or images from existing puzzle books or games. All puzzles come from the project's own generator.

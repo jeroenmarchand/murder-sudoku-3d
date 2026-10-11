@@ -4,7 +4,7 @@ Guidance for AI coding agents (Claude Code, Codex, Copilot, Cursor, and others) 
 
 ## What this is
 
-Murder Sudoku 3D is a static web game: a murder-mystery logic puzzle. Players place suspects on a floor plan (one person per row and column, like sudoku), follow one clue per suspect, and accuse the person who was alone with the victim. The interface is multilingual (English at the root, Dutch under `/nl/`). There is no framework, no bundler, and no server. The site is an installable, offline-capable web app (service worker), and it is also wrapped as an iOS and Android app.
+Murder Sudoku 3D is a static web game: a murder-mystery logic puzzle. Players place suspects on a floor plan (one person per row and column, like sudoku), follow one clue per suspect, and accuse the person who was alone with the victim. The interface is multilingual (English at the root, Dutch under `/nl/`). There is no framework, no bundler, and no server. The site is an installable, offline-capable web app (service worker).
 
 Live site: https://jeroenmarchand.github.io/murder-sudoku-3d/
 
@@ -47,7 +47,7 @@ Never edit `dist/`; it is generated.
 - **Every player-facing string is translated** in every language in `LANGS` (English and Dutch). Never hard-code UI text in the engine: add it to the `i18n/<lang>.js` files and, for themes, to `i18n.en` next to the inline Dutch. Clues are built from fragments, so check grammar in the browser in each language. Code and comments in English.
 - **Do not change puzzle output casually.** Any change to `src/core.js` that alters RNG use changes the puzzle behind every shared case link (`#medium-75`). If you must, say so in the pull request.
 - **Theme names:** suspect names must start with their letter A to H (one female, one male per letter); the victim is V. The smoke test checks this.
-- **No external assets and no network loads at runtime.** Everything is procedural (geometry and canvas textures). three.js and the fonts (Cinzel, EB Garamond, Inter) are self-hosted under `vendor/`, so the game works offline and in the app. The smoke test fails if a page requests another host.
+- **No external assets and no network loads at runtime.** Everything is procedural (geometry and canvas textures). three.js and the fonts (Cinzel, EB Garamond, Inter) are self-hosted under `vendor/`, so the game works offline. The smoke test fails if a page requests another host.
 - **Service worker:** `src/site/sw.js` precaches the 3D and classic pages and the vendor files. It is not registered on `localhost` / `127.0.0.1` (dev server and tests), unless the URL has `?sw`. If you add a file the 3D app needs offline, check that it ends up in the precache list in `scripts/build.mjs`.
 - **Performance:** keep draw calls low (aim under ~350 per theme), scale particles with `HQ`, use `mergeStatic` and the automatic per-object baking (`bakeObj`, disable with `?nobake` to debug).
 - **Debug hooks:** the 3D app exposes `window.__dbg` (puzzle `P`, `state`, `tapCell(i)`, `TH`, renderer, camera). Tests rely on it; keep it working.
