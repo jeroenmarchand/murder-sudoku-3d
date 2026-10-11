@@ -6,7 +6,7 @@ Guidance for AI coding agents (Claude Code, Codex, Copilot, Cursor, and others) 
 
 Murder Sudoku 3D is a static web game: a murder-mystery logic puzzle. Players place suspects on a floor plan (one person per row and column, like sudoku), follow one clue per suspect, and accuse the person who was alone with the victim. The interface is multilingual (English at the root, Dutch under `/nl/`). There is no framework, no bundler, and no server. The site is an installable, offline-capable web app (service worker), and it is also wrapped as an iOS and Android app.
 
-Live site: https://jeroenmarchand.github.io/murder-sudoku/
+Live site: https://jeroenmarchand.github.io/murder-sudoku-3d/
 
 ## Commands
 

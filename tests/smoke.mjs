@@ -40,7 +40,7 @@ try {
     await p.fill('#fb-t', 'Test title'); await p.fill('#fb-d', 'Something is off');
     await p.locator('.fb .go').click();
     const u = new URL(await p.evaluate(() => window.__opened));
-    ok(u.hostname === 'github.com' && u.pathname === '/jeroenmarchand/murder-sudoku/issues/new', `${lang}: opens GitHub new issue ` + u.pathname);
+    ok(u.hostname === 'github.com' && u.pathname === '/jeroenmarchand/murder-sudoku-3d/issues/new', `${lang}: opens GitHub new issue ` + u.pathname);
     ok(u.searchParams.get('template') === 'puzzle.yml' && u.searchParams.get('title') === 'Test title' && u.searchParams.get('description') === 'Something is off' && /(Page|Pagina):/.test(u.searchParams.get('context')), `${lang}: issue is prefilled`);
     for (const t of ['bug', 'puzzle', 'idea']) ok(fs.existsSync(new URL(`../.github/ISSUE_TEMPLATE/${t}.yml`, import.meta.url)), `issue template ${t}.yml exists`);
     ok(errs.length === 0, `${lang}: no errors ` + errs.join(' | '));
