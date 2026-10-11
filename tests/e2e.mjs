@@ -4,18 +4,19 @@
 import fs from 'node:fs';
 import { start, devices } from './browser.mjs';
 fs.mkdirSync('test-results', { recursive: true });
-let fails=0;const ok=(c,m)=>{console.log((c?'  ok  ':'  FAIL ')+m);if(!c)fails++};
+const CI=!!process.env.CI;let fails=0;const ok=(c,m)=>{console.log((c?'  ok  ':'  FAIL ')+m);if(!c)fails++};
 const srv=await start();const b=srv.browser;const URL=process.argv[2]||srv.url+'3d/';
 {
  for(const [name,dev] of [['phone',devices['iPhone 13']],['tablet',devices['iPad (gen 7) landscape']]]){
   console.log('==',name);
-  const ctx=await b.newContext({...dev,locale:"en-US"});const p=await ctx.newPage();const errs=[];
+  // CI renders WebGL in software, so it runs at 1x pixels with longer waits
+  const ctx=await b.newContext({...dev,locale:"en-US",...(CI?{deviceScaleFactor:1}:{})});const p=await ctx.newPage();if(CI)p.setDefaultTimeout(60000);const errs=[];
   p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&!m.text().includes('404')&&errs.push(m.text()));
   await p.addInitScript(()=>{if(!sessionStorage.getItem('x')){localStorage.clear();sessionStorage.setItem('x',1)}});
   await p.goto(URL+'#medium-75');
   const ready=()=>p.waitForFunction(()=>window.__dbg&&__dbg.P&&document.querySelector('#loader.off')&&__dbg.busy===0,null,{timeout:60000});
   await ready();
-  const D=(f,a)=>p.evaluate(f,a);const idle=async()=>{await p.waitForFunction(()=>__dbg.busy===0,null,{timeout:8000});await p.waitForTimeout(80)};
+  const D=(f,a)=>p.evaluate(f,a);const idle=async()=>{await p.waitForFunction(()=>__dbg.busy===0,null,{timeout:CI?60000:8000});await p.waitForTimeout(80)};
   // first run: dossier opens on phone
   await p.waitForTimeout(2500);
   if(name==='phone'){ok(await D(()=>document.querySelector('#dossier').classList.contains('open')),'first run opens dossier');await p.click('#closeDoss');await p.waitForTimeout(400)}
@@ -70,7 +71,7 @@ const srv=await start();const b=srv.browser;const URL=process.argv[2]||srv.url+'
   await p.click(`#susList button[data-n="${wrong}"]`);ok(/alibi/.test(await D(()=>document.querySelector('#toast').textContent)),'wrong accusation');
   await p.click('#accuseBtn');ok(await D(n=>document.querySelector(`#susList button[data-n="${n}"]`).classList.contains('no'),wrong),'wrong suspect struck through');
   await p.click(`#susList button[data-n="${sol.killer}"]`);await p.waitForTimeout(1200);await p.screenshot({path:`test-results/${name}-reveal.png`});
-  await p.waitForSelector('#win.on',{timeout:5000});await p.waitForTimeout(600);await p.screenshot({path:`test-results/${name}-win.png`});
+  await p.waitForSelector('#win.on',{timeout:CI?60000:5000});await p.waitForTimeout(600);await p.screenshot({path:`test-results/${name}-win.png`});
   ok(await D(()=>__dbg.solved),'solved');
   // reload keeps solved
   await p.reload();await ready();ok(await D(()=>__dbg.solved&&Object.keys(__dbg.state).length===__dbg.P.sus.length+1),'reload restores solved board');
