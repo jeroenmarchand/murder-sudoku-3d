@@ -111,38 +111,38 @@ function tatamiTex(L){if(TATAMI[L])return TATAMI[L];return TATAMI[L]=ctex(200*L,
   g.fillStyle='rgba(220,180,90,.85)';for(let x=8;x<w;x+=14){g.fillRect(x,6,5,4);g.fillRect(x,h-10,5,4)}for(let y=8;y<h;y+=14){g.fillRect(6,y,4,5);g.fillRect(w-10,y,4,5)}})}
 
 // ---------- floors ----------
-const tatamiFloor=(heri,acc)=>(g,S,R,sh,li)=>{for(let x=0;x<S;x+=3){g.fillStyle=(x/3)%2?sh(.08):li(.06);g.fillRect(x,0,1.5,S)}
-  for(let k=0;k<260;k++){g.fillStyle=R()<.5?sh(.05):li(.05);g.fillRect(R()*S,R()*S,1,8+R()*24)}
-  for(const y of[0,S-22]){g.fillStyle=heri;g.fillRect(0,y,S,22);g.fillStyle=acc;for(let x=7;x<S;x+=16){g.beginPath();g.arc(x,y+11,2.6,0,7);g.fill()}
-    g.fillStyle='rgba(0,0,0,.3)';g.fillRect(0,y?y:21,S,1.5)}};
-const boards=(n,gap,knots)=>(g,S,R,sh,li)=>{const hh=S/n;for(let k=0;k<n;k++){const y=k*hh;g.fillStyle=R()<.5?sh(.06):li(.05);g.fillRect(0,y,S,hh);
-    g.lineWidth=1;for(let j=0;j<14;j++){g.strokeStyle=R()<.5?sh(.07):li(.05);g.beginPath();const yy=y+R()*hh;g.moveTo(0,yy);g.bezierCurveTo(S/3,yy+R()*4-2,S*2/3,yy+R()*4-2,S,yy+R()*3-1.5);g.stroke()}
+const tatamiFloor=(heri,acc)=>(g,S,R,sh,li)=>{for(let x=0;x<S;x+=3){g.fillStyle=(x/3)%2?sh(.035):li(.03);g.fillRect(x,0,1.5,S)}
+  for(let k=0;k<100;k++){g.fillStyle=R()<.5?sh(.03):li(.03);g.fillRect(R()*S,R()*S,1,8+R()*24)}
+  for(const y of[0,S-22]){g.globalAlpha=.4;g.fillStyle=heri;g.fillRect(0,y,S,22);g.globalAlpha=.25;g.fillStyle=acc;for(let x=7;x<S;x+=16){g.beginPath();g.arc(x,y+11,2.6,0,7);g.fill()}g.globalAlpha=1;
+    g.fillStyle='rgba(0,0,0,.1)';g.fillRect(0,y?y:21,S,1.5)}};
+const boards=(n,gap,knots)=>(g,S,R,sh,li)=>{const hh=S/n;for(let k=0;k<n;k++){const y=k*hh;g.fillStyle=R()<.5?sh(.03):li(.025);g.fillRect(0,y,S,hh);
+    g.lineWidth=1;for(let j=0;j<7;j++){g.strokeStyle=R()<.5?sh(.035):li(.025);g.beginPath();const yy=y+R()*hh;g.moveTo(0,yy);g.bezierCurveTo(S/3,yy+R()*4-2,S*2/3,yy+R()*4-2,S,yy+R()*3-1.5);g.stroke()}
     g.fillStyle=sh(gap);g.fillRect(0,y,S,2);const j=R()*S;g.fillRect(j,y,2,hh);
-    if(knots&&R()<.5){g.fillStyle=sh(.2);g.beginPath();g.ellipse(R()*S,y+hh/2,5,3,0,0,7);g.fill()}}};
+    if(knots&&R()<.3){g.fillStyle=sh(.08);g.beginPath();g.ellipse(R()*S,y+hh/2,5,3,0,0,7);g.fill()}}};
 const ROOMS={
-  Stal:{name:'Riksjaloods',art:'de',color:'#8f7d6a',pat:(g,S,R,sh,li)=>{boards(4,.32,true)(g,S,R,sh,li);g.fillStyle=sh(.45);for(let k=0;k<4;k++)for(const x of[10,S-10]){g.beginPath();g.arc(x,k*S/4+S/8,2.2,0,7);g.fill()}},rough:.9},
-  Binnenplaats:{name:'Binnenhof',art:'het',color:'#c7c4bc',pat:(g,S,R,sh,li)=>{for(let k=0;k<5000;k++){g.fillStyle=R()<.5?sh(.12):li(.16);g.fillRect(R()*S,R()*S,1.5,1.5)}
-    for(let y=4;y<S;y+=10){g.lineWidth=2.2;g.strokeStyle=sh(.16);g.beginPath();g.moveTo(0,y);for(let x=0;x<=S;x+=16)g.lineTo(x,y+Math.sin(x/S*PI*2)*1.5);g.stroke();
-      g.lineWidth=1.4;g.strokeStyle=li(.22);g.beginPath();g.moveTo(0,y+3);for(let x=0;x<=S;x+=16)g.lineTo(x,y+3+Math.sin(x/S*PI*2)*1.5);g.stroke()}},rough:.95},
+  Stal:{name:'Riksjaloods',art:'de',color:'#8f7d6a',pat:(g,S,R,sh,li)=>{boards(4,.14,true)(g,S,R,sh,li);g.fillStyle=sh(.16);for(let k=0;k<4;k++)for(const x of[10,S-10]){g.beginPath();g.arc(x,k*S/4+S/8,2.2,0,7);g.fill()}},rough:.9},
+  Binnenplaats:{name:'Binnenhof',art:'het',color:'#c7c4bc',pat:(g,S,R,sh,li)=>{for(let k=0;k<1500;k++){g.fillStyle=R()<.5?sh(.04):li(.05);g.fillRect(R()*S,R()*S,1.5,1.5)}
+    for(let y=8;y<S;y+=16){g.lineWidth=2.2;g.strokeStyle=sh(.06);g.beginPath();g.moveTo(0,y);for(let x=0;x<=S;x+=16)g.lineTo(x,y+Math.sin(x/S*PI*2)*1.5);g.stroke();
+      g.lineWidth=1.4;g.strokeStyle=li(.08);g.beginPath();g.moveTo(0,y+3);for(let x=0;x<=S;x+=16)g.lineTo(x,y+3+Math.sin(x/S*PI*2)*1.5);g.stroke()}},rough:.95},
   Bibliotheek:{name:'Schrijfkamer',art:'de',color:'#b4b46c',pat:tatamiFloor('#1f1c20','rgba(210,180,110,.7)'),rough:.85},
   Slaapkamer:{name:'Slaapvertrek',art:'het',color:'#dcc08c',pat:tatamiFloor('#2b3a6b','rgba(240,235,220,.8)'),rough:.85},
   Troonzaal:{name:'Keizerszaal',art:'de',color:'#a8443a',pat:(g,S,R,sh,li)=>{const gr=g.createLinearGradient(0,0,S,S);gr.addColorStop(0,li(.1));gr.addColorStop(.5,'rgba(0,0,0,0)');gr.addColorStop(1,sh(.1));g.fillStyle=gr;g.fillRect(0,0,S,S);
-    g.strokeStyle='rgba(232,190,100,.85)';g.lineWidth=3;g.strokeRect(12,12,S-24,S-24);g.lineWidth=1.2;g.strokeRect(20,20,S-40,S-40);
-    g.fillStyle='rgba(232,190,100,.8)';for(let p=0;p<5;p++){const a=p/5*PI*2-PI/2;g.beginPath();g.ellipse(S/2+Math.cos(a)*16,S/2+Math.sin(a)*16,12,8,a,0,7);g.fill()}
-    g.fillStyle='#a8443a';g.beginPath();g.arc(S/2,S/2,6,0,7);g.fill()},rough:.32},
+    g.strokeStyle='rgba(232,190,100,.28)';g.lineWidth=3;g.strokeRect(12,12,S-24,S-24);
+    g.fillStyle='rgba(232,190,100,.18)';for(let p=0;p<5;p++){const a=p/5*PI*2-PI/2;g.beginPath();g.ellipse(S/2+Math.cos(a)*16,S/2+Math.sin(a)*16,12,8,a,0,7);g.fill()}
+},rough:.32},
   Keuken:{name:'Keuken',art:'de',color:'#c08a58',pat:(g,S,R,sh,li)=>{for(let k=0;k<26;k++){g.fillStyle=R()<.5?sh(.06):li(.06);g.beginPath();g.ellipse(R()*S,R()*S,20+R()*40,12+R()*30,R()*3,0,7);g.fill()}
-    for(let k=0;k<3000;k++){g.fillStyle=R()<.5?sh(.15):li(.12);g.fillRect(R()*S,R()*S,1.4,1.4)}
-    for(let k=0;k<60;k++){g.strokeStyle='rgba(230,200,120,.35)';g.lineWidth=1;g.beginPath();const x=R()*S,y=R()*S,a=R()*6;g.moveTo(x,y);g.lineTo(x+Math.cos(a)*8,y+Math.sin(a)*8);g.stroke()}},rough:.95},
+    for(let k=0;k<800;k++){g.fillStyle=R()<.5?sh(.05):li(.04);g.fillRect(R()*S,R()*S,1.4,1.4)}
+    for(let k=0;k<15;k++){g.strokeStyle='rgba(230,200,120,.12)';g.lineWidth=1;g.beginPath();const x=R()*S,y=R()*S,a=R()*6;g.moveTo(x,y);g.lineTo(x+Math.cos(a)*8,y+Math.sin(a)*8);g.stroke()}},rough:.95},
   Kapel:{name:'Schrijn',art:'het',color:'#e6cd9f',pat:boards(3,.16,false),rough:.5},
-  Wapenkamer:{name:'Dojo',art:'de',color:'#6c4630',pat:(g,S,R,sh,li)=>{boards(8,.4,false)(g,S,R,sh,li);const gr=g.createLinearGradient(0,0,S,S);gr.addColorStop(.3,'rgba(255,240,220,0)');gr.addColorStop(.5,'rgba(255,240,220,.12)');gr.addColorStop(.7,'rgba(255,240,220,0)');g.fillStyle=gr;g.fillRect(0,0,S,S)},rough:.3},
+  Wapenkamer:{name:'Dojo',art:'de',color:'#7b5236',pat:(g,S,R,sh,li)=>{boards(4,.16,false)(g,S,R,sh,li);const gr=g.createLinearGradient(0,0,S,S);gr.addColorStop(.3,'rgba(255,240,220,0)');gr.addColorStop(.5,'rgba(255,240,220,.06)');gr.addColorStop(.7,'rgba(255,240,220,0)');g.fillStyle=gr;g.fillRect(0,0,S,S)},rough:.3},
   Tuin:{name:'Mostuin',art:'de',color:'#7a9658',pat:(g,S,R,sh,li)=>{for(let k=0;k<40;k++){g.fillStyle=R()<.5?'rgba(30,60,20,.18)':'rgba(190,220,120,.15)';g.beginPath();g.arc(R()*S,R()*S,8+R()*26,0,7);g.fill()}
-    for(let k=0;k<2500;k++){g.fillStyle=R()<.5?'rgba(25,55,15,.3)':'rgba(200,235,140,.25)';g.fillRect(R()*S,R()*S,1.5,1.5)}
-    g.fillStyle='rgba(255,200,215,.85)';for(let k=0;k<5;k++){g.beginPath();g.ellipse(R()*S,R()*S,3,2,R()*3,0,7);g.fill()}},rough:1},
-  Kelder:{name:'Sakekelder',art:'de',color:'#625c55',pat:(g,S,R,sh,li)=>{g.fillStyle=sh(.45);g.fillRect(0,0,S,S);
+    for(let k=0;k<700;k++){g.fillStyle=R()<.5?'rgba(25,55,15,.1)':'rgba(200,235,140,.08)';g.fillRect(R()*S,R()*S,1.5,1.5)}
+    g.fillStyle='rgba(255,200,215,.35)';for(let k=0;k<2;k++){g.beginPath();g.ellipse(R()*S,R()*S,3,2,R()*3,0,7);g.fill()}},rough:1},
+  Kelder:{name:'Sakekelder',art:'de',color:'#6d675f',pat:(g,S,R,sh,li)=>{g.fillStyle=sh(.2);g.fillRect(0,0,S,S);
     const xs=[0,S*.45+R()*20,S],ys=[0,S*.55+R()*20-10,S];
-    for(let a=0;a<2;a++)for(let b=0;b<2;b++){const x0=xs[a]+4,x1=xs[a+1]-4,y0=ys[b]+4,y1=ys[b+1]-4;g.fillStyle=`rgba(${95+R()*20|0},${90+R()*16|0},${82+R()*14|0},1)`;
-      g.beginPath();g.roundRect(x0,y0,x1-x0,y1-y0,10);g.fill();g.strokeStyle=li(.12);g.lineWidth=2;g.beginPath();g.moveTo(x0+8,y0+2);g.lineTo(x1-8,y0+2);g.stroke();
-      for(let k=0;k<500;k++){g.fillStyle=R()<.5?sh(.12):li(.08);g.fillRect(x0+R()*(x1-x0),y0+R()*(y1-y0),1.5,1.5)}}},rough:.9}};
+    for(let a=0;a<2;a++)for(let b=0;b<2;b++){const x0=xs[a]+4,x1=xs[a+1]-4,y0=ys[b]+4,y1=ys[b+1]-4;g.fillStyle=`rgba(${108+R()*6|0},${102+R()*5|0},${94+R()*5|0},1)`;
+      g.beginPath();g.roundRect(x0,y0,x1-x0,y1-y0,10);g.fill();g.strokeStyle=li(.05);g.lineWidth=2;g.beginPath();g.moveTo(x0+8,y0+2);g.lineTo(x1-8,y0+2);g.stroke();
+      for(let k=0;k<150;k++){g.fillStyle=R()<.5?sh(.05):li(.03);g.fillRect(x0+R()*(x1-x0),y0+R()*(y1-y0),1.5,1.5)}}},rough:.9}};
 
 // ---------- objects ----------
 const OBJS={
