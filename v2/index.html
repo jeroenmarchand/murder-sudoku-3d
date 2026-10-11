@@ -170,6 +170,14 @@ details.rules[open] summary svg{transform:rotate(180deg)}
 .rules ul{margin:0 0 12px;padding-left:18px;font-family:var(--story);font-size:16px;line-height:1.35;color:var(--ink)}
 .rules li{margin-bottom:6px}.rules li::marker{color:var(--gold-lo)}
 .rules b{color:var(--gold-hi);font-weight:600}
+.olist{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-bottom:14px}
+.oi{display:flex;align-items:center;gap:8px;padding:5px 8px 5px 5px;border-radius:12px;background:rgba(0,0,0,.18);border:1px solid transparent;color:var(--ink);text-align:left;font:inherit;cursor:pointer;transition:background .2s,border-color .2s}
+.oi:hover,.oi:focus-visible,.oi.on{background:rgba(255,210,130,.1);border-color:rgba(255,210,130,.35);outline:none}
+.oi .th{width:44px;height:44px;flex:none;border-radius:9px;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.14),rgba(255,255,255,.03));display:grid;place-items:center;overflow:hidden}
+.oi .th img{width:100%;height:100%;object-fit:contain}
+.oi b{display:block;font-size:13px;font-weight:600;line-height:1.2}
+.oi small{display:flex;white-space:nowrap;align-items:center;gap:4px;font-size:10.5px;color:var(--ink3);margin-top:2px}
+.oi small::before{content:"";width:6px;height:6px;border-radius:50%;background:#f0a090}.oi.y small::before{background:var(--ok)}
 .legend{display:grid;gap:8px;grid-template-columns:1fr 1fr;font-size:13px;color:var(--ink2);padding-bottom:14px;line-height:1.4}
 .legend div{border-radius:10px;padding:8px 10px;background:rgba(0,0,0,.18)}
 .legend h4{margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
@@ -313,7 +321,8 @@ details.rules[open] summary svg{transform:rotate(180deg)}
   <div class="eyebrow" id="eyebrow"></div>
   <h2 id="title"></h2><p class="sub" id="sub"></p>
   <div class="cards" id="cards"></div>
-  <details class="rules" id="rulesBox"><summary>Spelregels <svg><use href="#i-chev"/></svg></summary><ul id="rules"></ul><div class="legend" id="legend"></div></details>
+  <details class="rules objs" id="objBox" open><summary>Voorwerpen <svg><use href="#i-chev"/></svg></summary><div class="olist" id="olist"></div></details>
+  <details class="rules" id="rulesBox"><summary>Spelregels <svg><use href="#i-chev"/></svg></summary><ul id="rules"></ul></details>
   <div class="dfoot"><a id="printLink" href="../">Afdrukbare versie</a></div>
 </aside>
 
@@ -710,8 +719,10 @@ function floorTex(key){const ck=TH.id+':'+key;if(FT[ck])return FT[ck];const rd=T
   else if(pat==='flag'){g.strokeStyle=shade(.2);g.lineWidth=3;g.strokeRect(4,4,S/2-6,S/2-6);g.strokeRect(S/2+2,4,S/2-6,S/2-6);g.strokeRect(4,S/2+2,S-8,S/2-6);
     for(let k=0;k<3;k++){g.fillStyle=R()<.5?shade(.05):lite(.05);g.fillRect([6,S/2+4,6][k],[6,6,S/2+4][k],[S/2-10,S/2-10,S-12][k],S/2-10)}}
   else if(pat==='grass'){for(let k=0;k<900;k++){g.strokeStyle=R()<.5?'rgba(25,60,15,.22)':'rgba(200,235,140,.2)';const x=R()*S,y=R()*S;g.lineWidth=1.5;g.beginPath();g.moveTo(x,y);g.lineTo(x+R()*4-2,y-5-R()*6);g.stroke()}}
+  // calm the pattern: pull it back toward the room colour so pawns and objects read first
+  g.globalAlpha=.4;g.fillStyle=base;g.fillRect(0,0,S,S);g.globalAlpha=1;
   g.fillStyle=vg;g.fillRect(0,0,S,S);
-  const d=g.getImageData(0,0,S,S);for(let i=0;i<d.data.length;i+=4){const n=(R()-.5)*8;d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n}g.putImageData(d,0,0);
+  const d=g.getImageData(0,0,S,S);for(let i=0;i<d.data.length;i+=4){const n=(R()-.5)*5;d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n}g.putImageData(d,0,0);
   const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return FT[ck]=t}
 // one shared rounded tile: a soft bevel catches the light, the dark grout plate underneath draws the grid
 const TILE_GEO=(()=>{const s=.475,r=.06,b=.02,a=s-b;const sp=new THREE.Shape();
@@ -4004,7 +4015,7 @@ function drawNotes(){if(!notesCtx)return;const N=P.M.N,g=notesCtx;g.clearRect(0,
       else{g.font=`800 ${sl*.66}px Cinzel, Georgia, serif`;g.lineWidth=7;g.strokeStyle='rgba(255,250,235,.95)';g.strokeText(L,cx,cy+2);g.fillStyle=ncolor(n);g.fillText(L,cx,cy+2)}}}
   g.globalAlpha=1;notesTex.needsUpdate=true;notesMesh.visible=!showSol}
 const FADE=new Map();
-function faded(m){if(!FADE.has(m)){const c=m.clone();c.transparent=true;c.opacity=.22;c.depthWrite=false;FADE.set(m,c)}return FADE.get(m)}
+function faded(m){if(!FADE.has(m)){const c=m.clone();c.transparent=true;c.opacity=.45;c.depthWrite=false;FADE.set(m,c)}return FADE.get(m)}
 function fadeFurniture(on){shadowDirty=true;for(const g of furn)g.traverse(o=>{
   if(o.isSprite){o.visible=!on;return}if(!o.isMesh)return;
   if(on&&!o.userData.orig){o.userData.orig=o.material;o.material=Array.isArray(o.material)?o.material.map(faded):faded(o.material);o.castShadow=false}
@@ -4184,6 +4195,25 @@ function updateGhost(){const i=hoverCell;const want=i!==null&&tool&&mode==='pen'
 function flashCells(cells,color='#ff3b2b'){for(const i of cells){const t=tiles[i];if(!t)continue;const m=t.material;m.emissive.set(color);
   const back=()=>{const g=t.userData.glow;if(g){m.emissive.set(g[0]);m.emissiveIntensity=g[1]}else{m.emissiveIntensity=0;m.emissive.set('#000')}};
   tween(700,k=>m.emissiveIntensity=.5*Math.sin(Math.PI*Math.min(1,k*1.4))*(1-k),back,'fl'+i)}}
+// object legend: a small studio render of each object type, and a gold pulse on the board for the one you point at
+const THUMB={};let TR=null;
+function thumbOf(t){const k=TH.id+':'+t;if(THUMB[k]!==undefined)return THUMB[k];
+  if(!TR){const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setPixelRatio(1);r.setSize(112,112);r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;
+    const sc=new THREE.Scene();const pm=new THREE.PMREMGenerator(r);sc.environment=pm.fromScene(new RoomEnvironment(),.04).texture;sc.environmentIntensity=.6;
+    sc.add(new THREE.HemisphereLight('#ffffff','#6a5a4a',1.2));const d=new THREE.DirectionalLight('#fff3e0',2.8);d.position.set(3,6,4);sc.add(d);const d2=new THREE.DirectionalLight('#b8c4ff',1);d2.position.set(-4,2,-3);sc.add(d2);
+    TR={r,sc,cam:new THREE.PerspectiveCamera(28,1,.01,50)}}
+  const f0=flames.length,a0=anims.length,ctx={world:new THREE.Group(),N:P.M.N,H:P.M.N/2,E:P.M.N/2+.2,seed:P.seed,rand:Math.random,anim:()=>{},M:P.M};let g;
+  try{g=TH.objs[t].build(t==='bed'?2:1,ctx)}catch(e){flames.length=f0;anims.length=a0;return THUMB[k]=''}flames.length=f0;anims.length=a0;
+  TR.sc.add(g);g.updateMatrixWorld(true);const bx=new THREE.Box3();g.traverse(o=>{if(o.isMesh&&o.geometry){o.geometry.computeBoundingBox();bx.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld))}});
+  const c=bx.getCenter(new THREE.Vector3()),rad=bx.getSize(new THREE.Vector3()).length()/2,cam=TR.cam;
+  cam.position.copy(c).add(new THREE.Vector3(1,1.05,1.45).normalize().multiplyScalar(rad/Math.sin(THREE.MathUtils.degToRad(14))*.92));cam.lookAt(c);
+  TR.r.render(TR.sc,cam);const url=TR.r.domElement.toDataURL('image/png');TR.sc.remove(g);g.traverse(o=>o.geometry&&o.geometry.dispose());return THUMB[k]=url}
+function fillThumbs(types){const todo=types.filter(t=>THUMB[TH.id+':'+t]===undefined);const th=TH;
+  const step=()=>{if(TH!==th||!todo.length)return;const t=todo.shift(),url=thumbOf(t),el=document.querySelector(`#olist .oi[data-t="${t}"] .th`);if(el&&url)el.innerHTML=`<img alt="" src="${url}">`;setTimeout(step,30)};setTimeout(step,400)}
+function showType(t){const cells=P.M.objs.filter(o=>o.t===t).flatMap(o=>o.cells);
+  for(const i of cells){const tl=tiles[i];if(!tl)continue;const m=tl.material;m.emissive.set('#ffc45a');
+    const back=()=>{const g=tl.userData.glow;if(g){m.emissive.set(g[0]);m.emissiveIntensity=g[1]}else{m.emissiveIntensity=0;m.emissive.set('#000')}};
+    tween(1500,k=>m.emissiveIntensity=.55*Math.abs(Math.sin(Math.PI*2*k))*(1-k*.6),back,'fl'+i)}}
 function ringAt(i){const p=cellPos(i);hl.position.set(p.x,baseY(i)+.04,p.z);hl.userData.on=true;hl.material.opacity=1;clearTimeout(hl.userData.to);hl.userData.to=setTimeout(()=>hl.userData.on=false,500)}
 function conflicts(i,who){const N=P.M.N;return Object.keys(state).filter(n=>n!==who&&(Math.floor(state[n]/N)===Math.floor(i/N)||state[n]%N===i%N))}
 
@@ -4259,7 +4289,10 @@ function renderStatic(){
   const vn=P.vic.name.replace(/^(\w)/,c=>c.toUpperCase());
   $('#eyebrow').textContent=`Zaak ${P.seed} · ${{easy:'Makkelijk',medium:'Normaal',hard:'Moeilijk'}[P.diff]}`;$('#title').textContent=`De moord op ${vn}`;$('#sub').textContent=TH.subs[P.seed%TH.subs.length];
   const types=[...new Set(P.M.obj.filter(Boolean))];
-  $('#legend').innerHTML=`<div class="y"><h4>KUNNEN WORDEN BEZET</h4>${types.filter(t=>OCC.has(t)).map(t=>cap(oname(t))).join(', ')}</div><div class="n"><h4>KUNNEN NIET WORDEN BEZET</h4>${types.filter(t=>!OCC.has(t)).map(t=>cap(oname(t))).join(', ')}</div>`;
+  const ord=[...types.filter(t=>OCC.has(t)),...types.filter(t=>!OCC.has(t))];
+  $('#olist').innerHTML=ord.map(t=>`<button class="oi${OCC.has(t)?' y':''}" data-t="${t}" title="Toon op het bord"><span class="th">${THUMB[TH.id+':'+t]?`<img alt="" src="${THUMB[TH.id+':'+t]}">`:''}</span><span><b>${cap(oname(t))}</b><small>${OCC.has(t)?'Bezetbaar':'Blokkeert'}</small></span></button>`).join('');
+  $('#olist').querySelectorAll('.oi').forEach(b=>{b.onclick=()=>{if(innerWidth<900&&$('#dossier').classList.contains('open')){$('#dossier').classList.remove('open');setTimeout(()=>showType(b.dataset.t),380)}else showType(b.dataset.t)};b.onmouseenter=()=>{if(matchMedia('(hover:hover)').matches)showType(b.dataset.t)}});
+  fillThumbs(ord);
   $('#rules').innerHTML=`<li>Iedere persoon staat in een eigen <b>rij</b> en een eigen <b>kolom</b>.</li>
 <li>Je staat op een lege tegel of op een object dat bezet kan worden: ${(()=>{const a=[...OCC].map(oname);return a.slice(0,-1).join(', ')+' of '+a.at(-1)})()}.</li>
 <li><b>Naast</b> betekent direct ervoor, erachter, links of rechts, <b>in hetzelfde gebied</b>. Muren scheiden de gebieden.</li>
