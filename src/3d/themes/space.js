@@ -126,31 +126,31 @@ function plateTex(L){const W=256*L,Hh=256,c=cv(W,Hh),g=c.getContext('2d');g.fill
   return ctex(c)}
 
 // ---------- floors ----------
-function panelEdge(g,S,sh,li,inset=10){g.strokeStyle=sh(.32);g.lineWidth=3;g.strokeRect(inset,inset,S-2*inset,S-2*inset);g.strokeStyle=li(.22);g.lineWidth=1.5;g.strokeRect(inset+3,inset+3,S-2*inset-6,S-2*inset-6)}
-function rivets(g,S,sh,li,o=22){for(const [x,y] of[[o,o],[S-o,o],[o,S-o],[S-o,S-o]]){g.fillStyle=sh(.35);g.beginPath();g.arc(x+1,y+1,4,0,TAU);g.fill();g.fillStyle=li(.45);g.beginPath();g.arc(x,y,3.2,0,TAU);g.fill()}}
+function panelEdge(g,S,sh,li,inset=10){g.strokeStyle=sh(.14);g.lineWidth=3;g.strokeRect(inset,inset,S-2*inset,S-2*inset);g.strokeStyle=li(.1);g.lineWidth=1.5;g.strokeRect(inset+3,inset+3,S-2*inset-6,S-2*inset-6)}
+function rivets(g,S,sh,li,o=22){for(const [x,y] of[[o,o],[S-o,o],[o,S-o],[S-o,S-o]]){g.fillStyle=sh(.14);g.beginPath();g.arc(x+1,y+1,4,0,TAU);g.fill();g.fillStyle=li(.18);g.beginPath();g.arc(x,y,3.2,0,TAU);g.fill()}}
 const FL={
-  tread(g,S,R,sh,li){for(let y=14,r=0;y<S;y+=20,r++)for(let x=14+(r%2)*10;x<S-6;x+=20){g.save();g.translate(x,y);g.rotate((r%2)?.75:-.75);g.fillStyle=li(.3);g.fillRect(-7,-2,14,3.5);g.fillStyle=sh(.28);g.fillRect(-7,1.5,14,1.6);g.restore()}
+  tread(g,S,R,sh,li){for(let y=20,r=0;y<S;y+=30,r++)for(let x=20+(r%2)*15;x<S-10;x+=30){g.save();g.translate(x,y);g.rotate((r%2)?.75:-.75);g.fillStyle=li(.1);g.fillRect(-7,-2,14,3.5);g.fillStyle=sh(.09);g.fillRect(-7,1.5,14,1.6);g.restore()}
     panelEdge(g,S,sh,li,6);rivets(g,S,sh,li,16)},
   atrium(g,S,R,sh,li){g.fillStyle=li(.18);g.fillRect(14,14,S-28,S-28);panelEdge(g,S,sh,li,14);g.strokeStyle=sh(.12);g.lineWidth=2;g.beginPath();g.arc(S/2,S/2,S*.27,0,TAU);g.stroke();
-    g.strokeStyle=li(.3);g.beginPath();g.arc(S/2,S/2,S*.27-3,0,TAU);g.stroke();for(let k=0;k<4;k++){g.save();g.translate(S/2,S/2);g.rotate(k*Math.PI/2+Math.PI/4);g.fillStyle=sh(.12);g.fillRect(S*.31,-2,S*.12,4);g.restore()}},
-  circuit(g,S,R,sh,li){g.lineWidth=2.4;for(let k=0;k<22;k++){let x=Math.round(R()*8)*S/8,y=Math.round(R()*8)*S/8;g.strokeStyle=k%3?'rgba(150,235,255,.38)':'rgba(255,255,255,.5)';g.beginPath();g.moveTo(x,y);
-      for(let s=0;s<4;s++){if(R()<.5)x+=(R()<.5?-1:1)*S/8*(1+Math.floor(R()*2));else y+=(R()<.5?-1:1)*S/8*(1+Math.floor(R()*2));g.lineTo(x,y)}g.stroke();g.fillStyle='rgba(170,245,255,.7)';g.beginPath();g.arc(x,y,4,0,TAU);g.fill()}
+    g.strokeStyle=li(.12);g.beginPath();g.arc(S/2,S/2,S*.27-3,0,TAU);g.stroke();for(let k=0;k<4;k++){g.save();g.translate(S/2,S/2);g.rotate(k*Math.PI/2+Math.PI/4);g.fillStyle=sh(.12);g.fillRect(S*.31,-2,S*.12,4);g.restore()}},
+  circuit(g,S,R,sh,li){g.lineWidth=2.4;for(let k=0;k<10;k++){let x=Math.round(R()*8)*S/8,y=Math.round(R()*8)*S/8;g.strokeStyle=k%3?'rgba(150,235,255,.15)':'rgba(255,255,255,.18)';g.beginPath();g.moveTo(x,y);
+      for(let s=0;s<4;s++){if(R()<.5)x+=(R()<.5?-1:1)*S/8*(1+Math.floor(R()*2));else y+=(R()<.5?-1:1)*S/8*(1+Math.floor(R()*2));g.lineTo(x,y)}g.stroke();g.fillStyle='rgba(170,245,255,.25)';g.beginPath();g.arc(x,y,4,0,TAU);g.fill()}
     panelEdge(g,S,sh,li,4)},
-  hex(g,S,R,sh,li){const r=S/7,dx=r*1.732;for(let y=0,row=0;y<S+r;y+=r*1.5,row++)for(let x=(row%2)*dx/2;x<S+dx;x+=dx){g.beginPath();for(let k=0;k<6;k++){const a=k/6*TAU+Math.PI/6;g[k?'lineTo':'moveTo'](x+Math.cos(a)*r*.93,y+Math.sin(a)*r*.93)}g.closePath();
-      g.fillStyle=R()<.5?li(.14):sh(.03);g.fill();g.strokeStyle=sh(.2);g.lineWidth=3;g.stroke();g.strokeStyle=li(.35);g.lineWidth=1;g.stroke()}},
-  grateHex(g,S,R,sh,li){const r=S/9,dx=r*1.732;for(let y=0,row=0;y<S+r;y+=r*1.5,row++)for(let x=(row%2)*dx/2;x<S+dx;x+=dx){g.beginPath();for(let k=0;k<6;k++){const a=k/6*TAU+Math.PI/6;g[k?'lineTo':'moveTo'](x+Math.cos(a)*r*.7,y+Math.sin(a)*r*.7)}g.closePath();
-      g.fillStyle=sh(.45);g.fill();g.strokeStyle=li(.25);g.lineWidth=1.5;g.stroke()}panelEdge(g,S,sh,li,5)},
+  hex(g,S,R,sh,li){const r=S/4,dx=r*1.732;for(let y=0,row=0;y<S+r;y+=r*1.5,row++)for(let x=(row%2)*dx/2;x<S+dx;x+=dx){g.beginPath();for(let k=0;k<6;k++){const a=k/6*TAU+Math.PI/6;g[k?'lineTo':'moveTo'](x+Math.cos(a)*r*.93,y+Math.sin(a)*r*.93)}g.closePath();
+      g.fillStyle=R()<.5?li(.04):sh(.02);g.fill();g.strokeStyle=sh(.08);g.lineWidth=3;g.stroke();g.strokeStyle=li(.12);g.lineWidth=1;g.stroke()}},
+  grateHex(g,S,R,sh,li){const r=S/5,dx=r*1.732;for(let y=0,row=0;y<S+r;y+=r*1.5,row++)for(let x=(row%2)*dx/2;x<S+dx;x+=dx){g.beginPath();for(let k=0;k<6;k++){const a=k/6*TAU+Math.PI/6;g[k?'lineTo':'moveTo'](x+Math.cos(a)*r*.7,y+Math.sin(a)*r*.7)}g.closePath();
+      g.fillStyle=sh(.14);g.fill();g.strokeStyle=li(.08);g.lineWidth=1.5;g.stroke()}panelEdge(g,S,sh,li,5)},
   bridge(g,S,R,sh,li){const c=34;g.fillStyle=li(.1);g.beginPath();g.moveTo(c,14);g.lineTo(S-c,14);g.lineTo(S-14,c);g.lineTo(S-14,S-c);g.lineTo(S-c,S-14);g.lineTo(c,S-14);g.lineTo(14,S-c);g.lineTo(14,c);g.closePath();g.fill();
-    g.strokeStyle=li(.4);g.lineWidth=2;g.stroke();g.strokeStyle=sh(.2);g.lineWidth=2;for(let k=1;k<4;k++){g.beginPath();g.moveTo(40,S/2+(k-2)*26);g.lineTo(S-40,S/2+(k-2)*26);g.stroke()}
-    g.fillStyle='rgba(255,220,255,.4)';g.fillRect(S/2-30,S/2-3,60,6)},
-  galley(g,S,R,sh,li){const n=4,s=S/n;for(let y=0;y<n;y++)for(let x=0;x<n;x++){g.fillStyle=R()<.5?li(.1):sh(.04);g.fillRect(x*s+3,y*s+3,s-6,s-6)}
-    g.strokeStyle=sh(.25);g.lineWidth=4;for(let k=0;k<=S;k+=s){g.beginPath();g.moveTo(k,0);g.lineTo(k,S);g.moveTo(0,k);g.lineTo(S,k);g.stroke()}},
-  nebula(g,S,R,sh,li){for(let k=0;k<6;k++){const x=R()*S,y=R()*S,r=30+R()*60,gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,R()<.5?'rgba(255,170,255,.25)':'rgba(140,200,255,.22)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,S,S)}
-    for(let k=0;k<70;k++){g.fillStyle=`rgba(255,255,255,${.3+R()*.6})`;const r=R()<.9?1:2.2;g.beginPath();g.arc(R()*S,R()*S,r,0,TAU);g.fill()}panelEdge(g,S,sh,li,4)},
-  hydro(g,S,R,sh,li){panelEdge(g,S,sh,li,8);for(let y=0;y<3;y++)for(let x=0;x<3;x++){const cx=S/6+x*S/3,cy=S/6+y*S/3;g.fillStyle=sh(.4);g.beginPath();g.arc(cx,cy,S/10,0,TAU);g.fill();g.strokeStyle=li(.35);g.lineWidth=3;g.stroke();
-      g.fillStyle='rgba(160,255,140,.5)';for(let k=0;k<5;k++){g.beginPath();g.ellipse(cx+Math.cos(k*1.26)*7,cy+Math.sin(k*1.26)*7,6,3,k*1.26,0,TAU);g.fill()}}},
-  grate(g,S,R,sh,li){for(let x=18;x<S-14;x+=14){g.fillStyle=sh(.42);g.fillRect(x,18,7,S-36);g.fillStyle=li(.2);g.fillRect(x+7,18,2,S-36)}panelEdge(g,S,sh,li,6);
-    g.fillStyle='rgba(20,20,20,.55)';g.fillRect(6,S-16,S-12,10);g.fillStyle='rgba(240,190,40,.7)';for(let x=6;x<S-12;x+=16){g.beginPath();g.moveTo(x,S-6);g.lineTo(x+8,S-6);g.lineTo(x+14,S-16);g.lineTo(x+6,S-16);g.fill()}},
+    g.strokeStyle=li(.14);g.lineWidth=2;g.stroke();g.strokeStyle=sh(.07);g.lineWidth=2;for(let k=1;k<4;k++){g.beginPath();g.moveTo(40,S/2+(k-2)*26);g.lineTo(S-40,S/2+(k-2)*26);g.stroke()}
+    g.fillStyle='rgba(255,220,255,.14)';g.fillRect(S/2-30,S/2-3,60,6)},
+  galley(g,S,R,sh,li){const n=2,s=S/n;for(let y=0;y<n;y++)for(let x=0;x<n;x++){g.fillStyle=R()<.5?li(.04):sh(.02);g.fillRect(x*s+3,y*s+3,s-6,s-6)}
+    g.strokeStyle=sh(.12);g.lineWidth=3;for(let k=0;k<=S;k+=s){g.beginPath();g.moveTo(k,0);g.lineTo(k,S);g.moveTo(0,k);g.lineTo(S,k);g.stroke()}},
+  nebula(g,S,R,sh,li){for(let k=0;k<6;k++){const x=R()*S,y=R()*S,r=30+R()*60,gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,R()<.5?'rgba(255,170,255,.12)':'rgba(140,200,255,.1)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,S,S)}
+    for(let k=0;k<25;k++){g.fillStyle=`rgba(255,255,255,${.15+R()*.25})`;const r=R()<.9?1:2.2;g.beginPath();g.arc(R()*S,R()*S,r,0,TAU);g.fill()}panelEdge(g,S,sh,li,4)},
+  hydro(g,S,R,sh,li){panelEdge(g,S,sh,li,8);for(let y=0;y<2;y++)for(let x=0;x<2;x++){const cx=S/4+x*S/2,cy=S/4+y*S/2;g.fillStyle=sh(.12);g.beginPath();g.arc(cx,cy,S/8,0,TAU);g.fill();g.strokeStyle=li(.1);g.lineWidth=3;g.stroke();
+      g.fillStyle='rgba(160,255,140,.12)';for(let k=0;k<5;k++){g.beginPath();g.ellipse(cx+Math.cos(k*1.26)*7,cy+Math.sin(k*1.26)*7,6,3,k*1.26,0,TAU);g.fill()}}},
+  grate(g,S,R,sh,li){for(let x=18;x<S-14;x+=22){g.fillStyle=sh(.14);g.fillRect(x,18,9,S-36);g.fillStyle=li(.07);g.fillRect(x+7,18,2,S-36)}panelEdge(g,S,sh,li,6);
+    g.fillStyle='rgba(20,20,20,.18)';g.fillRect(6,S-16,S-12,10);g.fillStyle='rgba(240,190,40,.22)';for(let x=6;x<S-12;x+=16){g.beginPath();g.moveTo(x,S-6);g.lineTo(x+8,S-6);g.lineTo(x+14,S-16);g.lineTo(x+6,S-16);g.fill()}},
 };
 
 // ---------- objects ----------
