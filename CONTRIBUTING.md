@@ -44,4 +44,4 @@ Agents read [AGENTS.md](AGENTS.md) automatically. Check the result in the browse
 
 ## License
 
-By contributing, you agree that your contribution is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE), like the rest of the project, and that the maintainer may also license it under other terms.
+By contributing, you agree that your contribution is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE), like the rest of the project. You also grant Jeroen Marchand a perpetual, worldwide, royalty-free, irrevocable license to use, change, sublicense, and distribute your contribution under any terms, including commercial ones. You confirm that the contribution is your own work and that you have the right to grant this.

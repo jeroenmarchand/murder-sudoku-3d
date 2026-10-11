@@ -59,7 +59,7 @@ There is no framework and no bundler, and no server: `npm run build` combines th
 
 ## License
 
-[PolyForm Noncommercial 1.0.0](LICENSE). You're free to play, study, change, and share Murder Sudoku 3D for any noncommercial purpose, including personal use, teaching, research, and charities. Selling it, putting it behind ads, or using it in a commercial product isn't allowed without permission. Want to use it commercially? Open an issue.
+[PolyForm Noncommercial 1.0.0](LICENSE). You're free to play, study, change, and share Murder Sudoku 3D for any noncommercial purpose, including personal use, teaching, research, and charities. Selling it, putting it behind ads, or using it in a commercial product isn't allowed without permission. Jeroen Marchand holds the copyright and can offer commercial licenses; to ask about one, open an issue.
 
 Bundled third-party code keeps its own license: three.js (MIT) and the Cinzel, EB Garamond, and Inter fonts (SIL Open Font License).
 
