@@ -42,7 +42,8 @@ registerTheme({
   look:{ sky:[css colours top→bottom or [stop,colour]], fog:[colour,near,far], hemi:[sky,ground,I], sun:[colour,I,[x,y,z]],
          rim:[colour,I], fill:[colour,I], exposure:1, env:.35, bloom:[strength,radius,threshold],
          wall:'#hex', cap:'#hex', wallMap?:Texture, wallRough?, wallMetal?, capGlow?:'#hex', grout:'#hex', groutMetal?, base:'#hex'|false,
-         label:{bg:'rgba()',fg:'#hex',line:'rgba()',font:'CSS font family'}, dust:[colour,count,opacity], shadowR?:number, sunFixed?:bool },
+         label:{bg:'rgba()',fg:'#hex',line:'rgba()',font:'CSS font family'}, dust:[colour,count,opacity], shadowR?:number, sunFixed?:bool,
+         vignette?:.32, focus?:.36 /* how much darker the surroundings get outside the board, 0 = off */ },
   i18n:{en:{ /* English text, see "Translations" below */ }},
   env(ctx){ /* scenery around the board, built into ctx.world */ }
 });
