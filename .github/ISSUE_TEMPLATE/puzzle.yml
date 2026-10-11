@@ -1,0 +1,20 @@
+name: "🧩 The puzzle is wrong"
+description: A clue, solution, or case doesn't seem right. Any language is fine.
+labels: ["puzzle", "feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: Include the case number (for example `medium-75`), so everyone can open the exact same puzzle.
+  - type: textarea
+    id: description
+    attributes:
+      label: What is wrong?
+      description: Which clue or square, and why do you think it's wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Technical details
+      description: Filled in automatically when you use the feedback button in the game.
+      render: markdown

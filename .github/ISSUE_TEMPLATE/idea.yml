@@ -1,0 +1,16 @@
+name: "💡 Idea or wish"
+description: Suggest an improvement, a feature, a new setting, or a new language. Any language is fine.
+labels: ["idea", "feedback"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What would you like to see?
+      description: Describe your idea and why it makes the game better.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Technical details
+      render: markdown

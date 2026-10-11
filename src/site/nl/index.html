@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Murder Sudoku · gratis moordpuzzels online in 3D | Wie is de moordenaar?</title>
+<meta name="description" content="Murder Sudoku is een gratis logische moordpuzzel in je browser. Zet de verdachten op de plattegrond, volg de aanwijzingen en ontmasker de moordenaar. Zes 3D-decors, drie niveaus, oneindig veel zaken en ook om te printen.">
+<link rel="canonical" href="__URL__">
+<!--HREFLANG-->
+<meta name="theme-color" content="#140f22">
+<link rel="icon" href="__ROOT__favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="__ROOT__site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="nl_NL">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:site_name" content="Murder Sudoku">
+<meta property="og:url" content="__URL__">
+<meta property="og:title" content="Murder Sudoku: wie is de moordenaar?">
+<meta property="og:description" content="Gratis logische moordpuzzels in 3D. Zet de verdachten op hun plek en ontmasker de dader. Zonder account, op telefoon, tablet en computer.">
+<meta property="og:image" content="__SITE__img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"WebSite","@id":"__URL__#site","url":"__URL__","name":"Murder Sudoku","alternateName":"Moordsudoku","inLanguage":"nl"},
+ {"@type":"SoftwareApplication","name":"Murder Sudoku","url":"__URL__3d/","applicationCategory":"GameApplication","applicationSubCategory":"Logische puzzel","operatingSystem":"Elke moderne browser","inLanguage":"nl","isAccessibleForFree":true,"image":"__SITE__img/og.jpg","description":"Gratis logische moordpuzzel: plaats de verdachten op een plattegrond, volg de aanwijzingen en vind de moordenaar. Zes 3D-decors, drie niveaus en oneindig veel zaken.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"license":"https://polyformproject.org/licenses/noncommercial/1.0.0/","codeRepository":"https://github.com/__REPO__"},
+ {"@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Wat is een moordsudoku?","acceptedAnswer":{"@type":"Answer","text":"Een moordsudoku, zoals Murder Sudoku, is een logische puzzel die sudoku combineert met een moordmysterie. Je zet de verdachten en het slachtoffer op een plattegrond met kamers. Net als bij sudoku staat iedereen in een eigen rij en kolom. Met de aanwijzingen vind je ieders plek, en de moordenaar is de enige die alleen met het slachtoffer in een kamer was."}},
+  {"@type":"Question","name":"Is Murder Sudoku gratis?","acceptedAnswer":{"@type":"Answer","text":"Ja. Murder Sudoku is helemaal gratis, zonder reclame, zonder account en zonder in-app-aankopen. De code staat op GitHub en mag je gebruiken en aanpassen, zolang het niet commercieel is."}},
+  {"@type":"Question","name":"Werkt het op mijn telefoon of tablet?","acceptedAnswer":{"@type":"Answer","text":"Ja. Murder Sudoku draait in de browser op telefoon, tablet en computer. Je hoeft niets te installeren. Je voortgang wordt op je eigen apparaat bewaard."}},
+  {"@type":"Question","name":"Kan ik de puzzels printen?","acceptedAnswer":{"@type":"Answer","text":"Ja. In de klassieke versie maak je een zaak in het gewenste niveau en druk je die af op A4, met de oplossing op een aparte pagina."}},
+  {"@type":"Question","name":"Hoeveel puzzels zijn er?","acceptedAnswer":{"@type":"Answer","text":"Oneindig veel. Elke zaak wordt ter plekke gemaakt en heeft precies één oplossing. Elke zaak heeft een nummer, dus je kunt een link delen zodat iemand anders precies dezelfde zaak speelt."}},
+  {"@type":"Question","name":"Hoe meld ik een fout of deel ik een idee?","acceptedAnswer":{"@type":"Answer","text":"Klik in het spel of op deze pagina op Feedback. Je bericht wordt een vooraf ingevuld formulier op GitHub, inclusief het nummer van de zaak. Om het te plaatsen heb je een gratis GitHub-account nodig. Je bericht is daarna openbaar."}}
+ ]}
+]}
+</script>
+<style>
+:root{--bg:#120d1e;--bg2:#1b1430;--card:rgba(255,255,255,.045);--line:rgba(255,255,255,.1);--ink:#f3ebdc;--ink2:#c7bba8;--ink3:#948a7c;--gold:#e4c07a;--gold-hi:#f6dfa6;--gold-ink:#2a1c08;--r:18px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:radial-gradient(1200px 700px at 70% -10%,#3a2a5c 0,transparent 60%),radial-gradient(900px 600px at -10% 30%,#2a1d3f 0,transparent 60%),var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--gold-hi)}
+img{max-width:100%;height:auto;display:block}
+.wrap{width:min(1120px,100% - 40px);margin:0 auto}
+h1,h2,h3{font-family:Cinzel,Georgia,serif;letter-spacing:.01em;line-height:1.15;margin:0}
+h2{font-size:clamp(28px,4vw,40px);margin-bottom:12px}
+h3{font-size:19px}
+.lead{color:var(--ink2);font-size:18px;max-width:640px}
+.eyebrow{font:600 12px/1 Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+section{padding:72px 0}
+/* nav */
+.nav{position:sticky;top:0;z-index:10;background:rgba(18,13,30,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:18px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font:700 18px Cinzel,serif;color:var(--ink);text-decoration:none;margin-right:auto}
+.logo img{width:28px;height:28px}
+.nav a.l{color:var(--ink2);text-decoration:none;font-size:14.5px}
+.nav a.l:hover{color:var(--ink)}
+@media(max-width:760px){.nav a.l{display:none}}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;font:600 15.5px Inter,sans-serif;text-decoration:none;border:1px solid var(--line);color:var(--ink);background:var(--card);cursor:pointer;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.08)}
+.btn.gold{background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:var(--gold-ink);border-color:transparent;box-shadow:0 8px 30px rgba(228,192,122,.25)}
+.btn.sm{padding:8px 14px;font-size:14px}
+/* hero */
+.hero{padding:56px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(38px,6vw,64px);margin-bottom:18px}
+.hero h1 span{display:block;font-size:.5em;color:var(--gold);margin-top:8px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 20px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.chips li{font-size:13.5px;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--card)}
+.shot{border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.hero{padding-top:32px}}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.step b{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(228,192,122,.15);color:var(--gold-hi);font-family:Cinzel,serif;margin-bottom:10px}
+.step p{margin:6px 0 0;color:var(--ink2)}
+.how{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.rules{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px}
+.rules ul{margin:10px 0 0;padding-left:20px;color:var(--ink2)}
+.rules li{margin:6px 0}
+.rules li b{color:var(--ink)}
+@media(max-width:860px){.steps,.how{grid-template-columns:1fr}}
+/* decors */
+.decors{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+.decor{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;color:inherit;text-decoration:none;transition:transform .2s,border-color .2s}
+.decor:hover{transform:translateY(-3px);border-color:rgba(228,192,122,.45)}
+.decor img{aspect-ratio:880/760;object-fit:cover;width:100%}
+.decor div{padding:14px 16px 16px}
+.decor p{margin:4px 0 0;color:var(--ink2);font-size:14.5px;font-style:italic}
+@media(max-width:860px){.decors{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.decors{grid-template-columns:1fr}}
+/* features */
+.feats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.feat .i{font-size:26px}
+.feat p{margin:6px 0 0;color:var(--ink2);font-size:14.5px}
+@media(max-width:860px){.feats{grid-template-columns:1fr 1fr}}
+/* faq */
+.faq{max-width:780px}
+.faq details{border-bottom:1px solid var(--line);padding:16px 0}
+.faq summary{cursor:pointer;font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::after{content:"+";color:var(--gold);font-size:22px;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq p{color:var(--ink2);margin:10px 0 0}
+/* open source */
+.oss{background:linear-gradient(135deg,rgba(228,192,122,.12),rgba(255,255,255,.03));border:1px solid rgba(228,192,122,.25);border-radius:26px;padding:36px;display:grid;grid-template-columns:1.2fr 1fr;gap:32px}
+.oss ul{margin:12px 0 0;padding-left:20px;color:var(--ink2)}
+.oss li{margin:6px 0}
+.oss pre{margin:0;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:14px;padding:16px;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink2);overflow:auto}
+@media(max-width:860px){.oss{grid-template-columns:1fr;padding:24px}}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--ink3);font-size:14px}
+footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer a{color:var(--ink2)}
+.lang{background:var(--card);color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:6px 10px;font:500 13.5px Inter,sans-serif;cursor:pointer}
+.lang option{color:#120d1e;background:#f3ebdc}
+.logo,.nav .btn{white-space:nowrap}
+@media(max-width:440px){.nav .wrap{gap:10px}.logo{font-size:16px;gap:8px}.lang{padding:5px 6px}}
+footer .langs a{text-decoration:none}footer .langs a[aria-current]{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Hoofdmenu"><div class="wrap">
+  <a class="logo" href="./"><img src="__ROOT__favicon.svg" alt="" width="28" height="28">Murder Sudoku</a>
+  <a class="l" href="#hoe-werkt-het">Hoe werkt het</a>
+  <a class="l" href="#decors">Decors</a>
+  <a class="l" href="#vragen">Vragen</a>
+  <a class="l" href="#meedoen">Meedoen</a>
+  <select class="lang" id="lang" aria-label="Taal" hidden></select>
+  <a class="btn gold sm" href="3d/">Speel nu</a>
+</div></nav>
+
+<main>
+<section class="hero"><div class="wrap">
+  <div>
+    <div class="eyebrow">Gratis logische puzzel</div>
+    <h1>Murder Sudoku <span>Wie is de moordenaar?</span></h1>
+    <p class="lead">Een moordpuzzel die je met pure logica oplost. Zet de verdachten op de plattegrond, volg hun aanwijzingen en ontmasker de dader. Speel in de browser, zonder account en zonder reclame.</p>
+    <div class="cta">
+      <a class="btn gold" href="3d/">Speel gratis in 3D</a>
+      <a class="btn" href="classic/">Klassiek en printen</a>
+    </div>
+    <ul class="chips"><li>Oneindig veel zaken</li><li>3 niveaus</li><li>6 decors</li><li>Telefoon, tablet en computer</li></ul>
+  </div>
+  <a class="shot" href="3d/" aria-label="Speel Murder Sudoku in 3D"><img src="__ROOT__img/castle-ui-nl.jpg" width="1280" height="800" alt="Murder Sudoku in 3D: een burcht met kamers, meubels, verdachten en hun aanwijzingen" fetchpriority="high"></a>
+</div></section>
+
+<section id="hoe-werkt-het"><div class="wrap">
+  <div class="eyebrow">Hoe werkt het</div>
+  <h2>Sudoku ontmoet een moordmysterie</h2>
+  <p class="lead">Elke zaak is een plattegrond met kamers, meubels, een slachtoffer en een handvol verdachten. Iedere verdachte heeft één aanwijzing. Samen leiden ze naar precies één oplossing.</p>
+  <div class="steps">
+    <div class="step"><b>1</b><h3>Lees het dossier</h3><p>Elke verdachte heeft een aanwijzing, zoals "stond naast de kist" of "was alleen in de keuken".</p></div>
+    <div class="step"><b>2</b><h3>Zet iedereen op zijn plek</h3><p>Plaats de pionnen op het bord. Maak notities en streep vakken weg, net als bij sudoku.</p></div>
+    <div class="step"><b>3</b><h3>Beschuldig de dader</h3><p>Wie was alleen met het slachtoffer? Wijs de moordenaar aan en sluit de zaak.</p></div>
+  </div>
+  <div class="how">
+    <div class="rules">
+      <h3>De spelregels</h3>
+      <ul>
+        <li>Iedere persoon staat in een eigen <b>rij</b> en een eigen <b>kolom</b>.</li>
+        <li>Je staat op een lege tegel of op iets waar je op kunt zitten, staan of liggen, zoals een stoel, bank of bed.</li>
+        <li><b>Naast</b> betekent direct ervoor, erachter, links of rechts, in hetzelfde gebied. Muren scheiden de gebieden.</li>
+        <li><b>Alleen</b> betekent: niemand anders in hetzelfde gebied.</li>
+        <li>Het slachtoffer was <b>alleen met de moordenaar</b>.</li>
+      </ul>
+    </div>
+    <div class="rules">
+      <h3>Kies je niveau</h3>
+      <ul>
+        <li><b>Makkelijk:</b> 6×6, ruime aanwijzingen. Ideaal om te beginnen.</li>
+        <li><b>Normaal:</b> 8×8, een flinke puzzel voor bij de koffie.</li>
+        <li><b>Moeilijk:</b> 9×9, waar elke aanwijzing telt.</li>
+      </ul>
+      <p style="color:var(--ink2);margin:14px 0 0">Vast? De hint wijst eerst een richting aan en zet pas bij de tweede tik een pion neer.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="decors"><div class="wrap">
+  <div class="eyebrow">Zes werelden</div>
+  <h2>Kies je plaats delict</h2>
+  <p class="lead">De puzzel blijft dezelfde, de wereld verandert. Elk decor heeft eigen kamers, meubels, verdachten en een levende omgeving met licht, schaduw en beweging.</p>
+  <div class="decors">
+    <a class="decor" href="3d/?theme=castle"><img src="__ROOT__img/castle.jpg" loading="lazy" width="1100" height="950" alt="Murder Sudoku-decor de burcht: een middeleeuws kasteel met slotgracht"><div><h3>🏰 De burcht</h3><p>Het hof wilde een feestmaal. Het kreeg een lijk.</p></div></a>
+    <a class="decor" href="3d/?theme=space"><img src="__ROOT__img/space.jpg" loading="lazy" width="1100" height="950" alt="Murder Sudoku-decor de ruimte: een ruimtestation met zonnepanelen"><div><h3>🚀 De ruimte</h3><p>In de ruimte hoort niemand je schreeuwen. Behalve vannacht.</p></div></a>
+    <a class="decor" href="3d/?theme=pirate"><img src="__ROOT__img/pirate.jpg" loading="lazy" width="1100" height="950" alt="Murder Sudoku-decor op zee: een piratenschip"><div><h3>🏴‍☠️ Op zee</h3><p>De schat is er nog. De kapitein niet.</p></div></a>
+    <a class="decor" href="3d/?theme=egypt"><img src="__ROOT__img/egypt.jpg" loading="lazy" width="1100" height="950" alt="Murder Sudoku-decor de tempel: een Egyptische tempel in de woestijn"><div><h3>🐫 De tempel</h3><p>De zon brandt. De farao zwijgt. Iemand liegt.</p></div></a>
+    <a class="decor" href="3d/?theme=japan"><img src="__ROOT__img/japan.jpg" loading="lazy" width="1100" height="950" alt="Murder Sudoku-decor het theehuis: een Japans theehuis met kersenbloesem en koivijver"><div><h3>🌸 Het theehuis</h3><p>De thee was nog warm. De gastheer niet meer.</p></div></a>
+    <a class="decor" href="3d/?theme=winter"><img src="__ROOT__img/winter.jpg" loading="lazy" width="1100" height="950" alt="Murder Sudoku-decor de berghut: een berghut in de sneeuw"><div><h3>🏔️ De berghut</h3><p>De sneeuwstorm sloot de pas. Niemand kon nog weg.</p></div></a>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">Waarom spelen</div>
+  <h2>Een nieuwe zaak wanneer je maar wilt</h2>
+  <div class="feats">
+    <div class="feat"><div class="i">♾️</div><h3>Oneindig veel</h3><p>Elke zaak wordt ter plekke bedacht en heeft precies één oplossing.</p></div>
+    <div class="feat"><div class="i">🔗</div><h3>Deel een zaak</h3><p>Elke zaak heeft een nummer. Stuur de link en speel dezelfde puzzel.</p></div>
+    <div class="feat"><div class="i">✏️</div><h3>Notities</h3><p>Kleine letters in de vakken en kruisjes, net als op papier.</p></div>
+    <div class="feat"><div class="i">🖨️</div><h3>Printen</h3><p>Druk een zaak af op A4, met de oplossing op een aparte pagina.</p></div>
+    <div class="feat"><div class="i">📱</div><h3>Overal</h3><p>Telefoon, tablet of computer. Niets te installeren.</p></div>
+    <div class="feat"><div class="i">💾</div><h3>Bewaart je voortgang</h3><p>Stop halverwege en ga later verder, op hetzelfde apparaat.</p></div>
+    <div class="feat"><div class="i">🙅</div><h3>Geen gedoe</h3><p>Geen account, geen reclame, geen tracking.</p></div>
+    <div class="feat"><div class="i">🧑‍💻</div><h3>Open source</h3><p>Gratis en open. Iedereen mag meebouwen.</p></div>
+  </div>
+</div></section>
+
+<section id="vragen"><div class="wrap faq">
+  <div class="eyebrow">Veelgestelde vragen</div>
+  <h2>Vragen over Murder Sudoku</h2>
+  <details open><summary>Wat is een moordsudoku?</summary><p>Een logische puzzel die sudoku combineert met een moordmysterie. Murder Sudoku is er een gratis online versie van. Je zet de verdachten en het slachtoffer op een plattegrond met kamers. Net als bij sudoku staat iedereen in een eigen rij en kolom. Met de aanwijzingen vind je ieders plek, en de moordenaar is de enige die alleen met het slachtoffer in een kamer was.</p></details>
+  <details><summary>Is Murder Sudoku gratis?</summary><p>Ja. Helemaal gratis, zonder reclame, zonder account en zonder aankopen in de app. De broncode staat op GitHub en mag je gebruiken en aanpassen, zolang het niet commercieel is.</p></details>
+  <details><summary>Werkt het op mijn telefoon of tablet?</summary><p>Ja. Murder Sudoku draait in de browser op telefoon, tablet en computer. Je hoeft niets te installeren. Je voortgang wordt op je eigen apparaat bewaard.</p></details>
+  <details><summary>Kan ik de puzzels printen?</summary><p>Ja. Open de <a href="classic/">klassieke versie</a>, kies een niveau en tik op Afdrukken. De oplossing komt op een aparte pagina.</p></details>
+  <details><summary>Hoeveel puzzels zijn er?</summary><p>Oneindig veel. Elke zaak wordt ter plekke gemaakt en gecontroleerd op precies één oplossing. Deel de link van een zaak, dan speelt een ander precies dezelfde puzzel.</p></details>
+  <details><summary>Hoe meld ik een fout of deel ik een idee?</summary><p>Klik op <a href="#" data-feedback>Feedback</a>, hier of in het spel via het menu met de drie puntjes. Je bericht opent als vooraf ingevuld formulier op GitHub, met het nummer van de zaak erbij. Om het te plaatsen heb je een gratis GitHub-account nodig. Je bericht is daarna openbaar, zodat iedereen het probleem kan terugvinden.</p></details>
+</div></section>
+
+<section id="meedoen"><div class="wrap">
+  <div class="oss">
+    <div>
+      <div class="eyebrow">Open source</div>
+      <h2>Bouw mee aan Murder Sudoku</h2>
+      <p class="lead">Murder Sudoku is van iedereen. De code staat op GitHub: iedereen mag hem spelen, bestuderen, aanpassen en delen, zolang niemand er geld aan verdient. Je hoeft geen expert te zijn om bij te dragen.</p>
+      <ul>
+        <li><b>Meld een fout of idee</b> met de feedbackknop. Dat is al een bijdrage.</li>
+        <li><b>Vertaal het spel.</b> Verbeter de Nederlandse of Engelse teksten, of voeg een nieuwe taal toe. Alle teksten staan per taal in één bestand.</li>
+        <li><b>Ontwerp een nieuw decor</b>, zoals een circus, een trein of een spookhuis. Eén bestand per decor, met een stap-voor-stapgids.</li>
+        <li><b>Werk met een AI-assistent.</b> De repository bevat instructies voor Claude Code, Codex, Copilot en andere codeeragents, plus automatische tests die je wijziging controleren.</li>
+      </ul>
+      <div class="cta">
+        <a class="btn gold" href="https://github.com/__REPO__">Bekijk op GitHub</a>
+        <a class="btn" href="#" data-feedback>Feedback geven</a>
+      </div>
+    </div>
+    <div>
+      <pre><code>git clone https://github.com/__REPO__
+cd murder-sudoku
+npm install
+npm run dev      # open http://localhost:5173
+npm test         # controleert of alles nog werkt</code></pre>
+      <p style="color:var(--ink3);font-size:14px;margin:12px 0 0">Liever niets installeren? Open de repository in GitHub Codespaces en alles staat klaar.</p>
+    </div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>© Murder Sudoku · gratis voor niet-commercieel gebruik (<a href="https://github.com/__REPO__/blob/main/LICENSE">licentie</a>) · een onafhankelijk project</span>
+  <span><a href="3d/">Speel in 3D</a> · <a href="classic/">Klassiek</a> · <a href="#" data-feedback>Feedback</a> · <a href="https://github.com/__REPO__">GitHub</a></span>
+  <nav class="langs" id="langs" aria-label="Taal"></nav>
+</div></footer>
+<script>{const P=window.PAGE_LANGS,N=window.LANG_NAMES,cur=document.documentElement.lang,s=document.getElementById('lang');
+if(P){s.innerHTML=Object.keys(P).map(l=>`<option value="${l}" title="${N[l]}"${l===cur?' selected':''}>${l.toUpperCase()}</option>`).join('');s.hidden=false;s.onchange=()=>switchLang(s.value);
+document.getElementById('langs').innerHTML=Object.keys(P).map(l=>`<a href="${P[l]}" hreflang="${l}" lang="${l}"${l===cur?' aria-current="true"':''} onclick="switchLang('${l}');return false">${N[l]}</a>`).join(' · ')}}</script>
+<!--FEEDBACK-->
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="__LANG__">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4ead8">
+<title>{{t:meta.title}}</title>
+<meta name="description" content="{{t:meta.desc}}">
+<link rel="canonical" href="__URL__">
+<!--HREFLANG-->
+<link rel="icon" href="__ROOT__favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="{{t:meta.locale}}">
+<meta property="og:site_name" content="Murder Sudoku">
+<meta property="og:url" content="__URL__">
+<meta property="og:title" content="{{t:meta.ogTitle}}">
+<meta property="og:description" content="{{t:meta.ogDesc}}">
+<meta property="og:image" content="__SITE__img/og.jpg">
+<style>
+:root{--bg:#f4ead8;--card:#eadcb9;--line:#b49b6b;--ink:#2b2118;--paper:#fff8e6;--red:#b22222;--ok:#2e7d32}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;-webkit-text-size-adjust:100%}
+button,select{font:inherit;color:inherit}
+header{position:relative;top:0;z-index:5;background:var(--bg);border-bottom:2px solid var(--line);padding:8px 12px calc(8px) 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+header h1{font-size:20px;margin:0;font-variant:small-caps;letter-spacing:1px}
+header .case{font-size:13px;opacity:.75;margin-left:6px;font-variant:normal}
+.controls{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--paper);padding:8px 10px;min-height:40px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:#8a6d3b;color:#fff}
+.btn{border:2px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 12px;min-height:40px;cursor:pointer}
+.btn.primary{background:#8a6d3b;color:#fff;border-color:#6b5228}
+.btn:disabled{opacity:.5;cursor:default}
+main{max-width:1280px;margin:0 auto;padding:12px;display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:900px){header{position:sticky}main{grid-template-columns:minmax(320px,1fr) minmax(420px,1.25fr);align-items:start}
+  #boardCol{position:sticky;top:76px;order:2} #clueCol{order:1}}
+.title{text-align:center;margin:2px 0 0;font-size:24px;font-variant:small-caps;letter-spacing:1px}
+.sub{text-align:center;font-style:italic;margin:2px 0 12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px;text-align:center;font-size:14px;position:relative;cursor:pointer;transition:transform .1s}
+.card.sel{outline:3px solid #8a6d3b;transform:translateY(-2px)}
+.card .face{font-size:34px;line-height:1.1}
+.card .tag{display:inline-block;background:var(--paper);border:1px solid #8a7550;border-radius:4px;padding:1px 8px;font-weight:bold;letter-spacing:1px;margin:3px 0;font-size:13px}
+.card .placed{position:absolute;top:6px;right:8px;font-size:15px;color:var(--ok)}
+.card.victim{background:#e7b3a8;border-color:#a0483b}
+.box{background:var(--paper);border:2px solid var(--line);border-radius:10px;padding:8px 14px;margin-top:12px;font-size:14px}
+.box h3{margin:2px 0 6px;font-size:16px}
+.box ul{margin:0;padding-left:18px}
+.legend{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.leg{flex:1 1 220px;border-radius:10px;padding:6px 8px;text-align:center;font-size:12px}
+.leg.ok{background:#dff0d0;border:2px solid #8fb36b}.leg.no{background:#f6d6c8;border:2px solid #c98b6b}
+.li{display:inline-block;margin:3px 6px;font-size:12px;vertical-align:top}
+.li svg{width:30px;height:30px;display:block;margin:0 auto}
+#board{width:100%;max-width:min(92vw,680px);margin:0 auto;display:block;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#board .hit{cursor:pointer}
+.palette{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}
+.tool{border:2px solid var(--line);background:var(--paper);border-radius:999px;min-width:44px;height:44px;padding:0 10px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-weight:bold}
+.tool[aria-pressed=true]{background:#8a6d3b;color:#fff;border-color:#6b5228}
+.tool .em{font-size:20px}
+.tool.done{opacity:.55}
+.actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center}
+.answer{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.answer select{border:2px solid var(--line);border-radius:10px;background:var(--paper);padding:8px;min-height:40px}
+#msg{min-height:24px;text-align:center;margin:8px 0;font-weight:bold}
+#msg.good{color:var(--ok)}#msg.bad{color:var(--red)}
+.overlay{position:fixed;inset:0;background:rgba(244,234,216,.85);display:none;align-items:center;justify-content:center;z-index:20;flex-direction:column;gap:12px;font-size:18px}
+.overlay.on{display:flex}
+.spinner{width:46px;height:46px;border:5px solid var(--line);border-top-color:#6b5228;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+footer{text-align:center;font-size:12px;opacity:.7;padding:16px}
+#print{display:none}
+@media print{
+  @page{size:A4;margin:12mm}
+  header,main,footer,.overlay{display:none!important}
+  body{background:#fff}
+  #print{display:block}
+  .ppage{page-break-after:always;background:var(--bg);border-radius:10px;padding:14px 18px;min-height:268mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ppage:last-child{page-break-after:auto}
+  .ppage .cards{grid-template-columns:repeat(3,1fr)}
+  .ppage .card{cursor:default}
+  .pboard{width:150mm;margin:0 auto;display:block}
+  .prow{display:flex;gap:14px;align-items:flex-end;margin-top:10px}
+  .pblank{width:92mm}
+  .pans{flex:1;border:2px solid var(--line);background:var(--paper);border-radius:6px;padding:10px 14px;font-size:16px}
+  .pans div{border-bottom:1.5px solid #333;height:30px}
+  .psol{width:110mm;margin:0 auto;display:block}
+}
+footer .links{margin-top:8px}footer .links a{color:inherit}
+footer .langs{margin-top:6px}footer .langs a{color:inherit;margin:0 4px}footer .langs a[aria-current]{font-weight:bold;text-decoration:none}
+@media print{.fb-back,.langs{display:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Murder Sudoku <span class="case" id="caseNo"></span></h1>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="{{t:ui.difficulty}}">
+      <button data-d="easy" aria-pressed="false">{{t:ui.easy}}</button>
+      <button data-d="medium" aria-pressed="true">{{t:ui.medium}}</button>
+      <button data-d="hard" aria-pressed="false">{{t:ui.hard}}</button>
+    </div>
+    <button class="btn primary" id="newBtn">{{t:ui.newCase}}</button>
+    <button class="btn" id="printBtn">{{t:ui.print}}</button>
+  </div>
+</header>
+
+<main>
+  <section id="boardCol">
+    <svg id="board" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="palette" id="palette"></div>
+    <div class="actions">
+      <button class="btn" id="hintBtn">{{t:ui.hint}}</button>
+      <button class="btn" id="clearBtn">{{t:ui.clear}}</button>
+      <button class="btn" id="solveBtn">{{t:ui.solution}}</button>
+    </div>
+    <div class="answer">
+      <label for="killer">{{t:ui.killerIs}}</label>
+      <select id="killer"></select>
+      <button class="btn primary" id="checkBtn">{{t:ui.check}}</button>
+    </div>
+    <div id="msg" role="status" aria-live="polite"></div>
+  </section>
+  <section id="clueCol">
+    <h2 class="title" id="title"></h2>
+    <p class="sub" id="sub"></p>
+    <div class="cards" id="cards"></div>
+    <div class="box"><h3>{{t:ui.rules}}</h3><ul id="rules"></ul></div>
+    <div class="legend" id="legend"></div>
+  </section>
+</main>
+<footer>{{t:ui.footer}}<nav class="links"><a href="../3d/">{{t:ui.play3d}}</a> · <a href="#" data-feedback>{{t:ui.feedback}}</a> · <a href="../">{{t:ui.about}}</a> · <a href="https://github.com/__REPO__">{{t:ui.source}}</a></nav><nav class="langs" id="langs" aria-label="{{t:ui.language}}"></nav></footer>
+<div class="overlay" id="busy"><div class="spinner"></div><div id="busyTxt">{{t:ui.busy}}</div></div>
+<div id="print"></div>
+
+<!--CORE-->
+
+<script>
+// ---------- page ----------
+/*@LANG*/
+const $=s=>document.querySelector(s);
+const EMO={paard:'🐎',kist:'📦',ton:'🛢️',hooibaal:'🌾',boom:'🌳',struik:'🌿',boekenkast:'📚',kast:'🗄️',harnas:'🛡️',kandelaar:'🕯️',stoel:'🪑',wapenrek:'🗡️',bloemperk:'🌷',wijnrek:'🍷'};
+const vn=n=>L.victims[n]||n; // display name: victims have translated titles, state keeps the internal name
+const room=k=>L.rooms[P.M.rooms[k].name]||P.M.rooms[k].name;
+const lbl=t=>(L.obj[t]||{label:t}).label;
+let P=null,diff='medium',tool=null,state={},marks={},checked=false,showSol=false;
+const CS=60,MG=8;
+
+function frag(a,n,first){
+  const [k,v]=a.split(':');const g=P.sus.find(s=>s.name===n).g;
+  if(k==='op'||k==='naast')return L.clue[k](L.obj[v]||{a:'',n:v,verb:''},first);
+  if(k==='in')return L.clue.in(room(+v).toLowerCase(),first);
+  if(k==='hoek'||k==='alleen')return L.clue[k](g,first);
+  return L.clue[k](first);
+}
+const PRI=['op','in','naast','hoek','rand','geenobject','alleen'];
+function clueText(n){const a=P.clues[n].slice().sort((x,y)=>PRI.indexOf(x.split(':')[0])-PRI.indexOf(y.split(':')[0]));
+  return a.map((x,j)=>frag(x,n,j===0)).join(', ')+'.'}
+
+function objSVG(t,x0,y0,w,h){
+  const cx=x0+w/2,cy=y0+h/2;
+  if(t==='tapijt')return `<rect x="${x0+7}" y="${y0+7}" width="${w-14}" height="${h-14}" fill="#d9534f" stroke="#7a1f1c" stroke-width="2"/><rect x="${x0+13}" y="${y0+13}" width="${w-26}" height="${h-26}" fill="none" stroke="#f3c969" stroke-width="2"/>`;
+  if(t==='tafel')return `<rect x="${x0+8}" y="${y0+8}" width="${w-16}" height="${h-16}" rx="4" fill="#8b5a2b" stroke="#4a2f14" stroke-width="2"/>`;
+  if(t==='bed'){const v=h>w;return `<rect x="${x0+6}" y="${y0+6}" width="${w-12}" height="${h-12}" rx="6" fill="#f5f5f5" stroke="#6b4a2b" stroke-width="3"/>`+
+    (v?`<rect x="${x0+14}" y="${y0+12}" width="${w-28}" height="20" rx="6" fill="#fff" stroke="#999"/><rect x="${x0+9}" y="${y0+40}" width="${w-18}" height="${h-49}" rx="4" fill="#7da7d9"/>`
+      :`<rect x="${x0+12}" y="${y0+14}" width="20" height="${h-28}" rx="6" fill="#fff" stroke="#999"/><rect x="${x0+40}" y="${y0+9}" width="${w-49}" height="${h-18}" rx="4" fill="#7da7d9"/>`)}
+  if(t==='bank')return `<rect x="${x0+8}" y="${y0+20}" width="${w-16}" height="16" rx="3" fill="#a0703f" stroke="#4a2f14" stroke-width="2"/><rect x="${x0+12}" y="${y0+36}" width="5" height="12" fill="#4a2f14"/><rect x="${x0+w-17}" y="${y0+36}" width="5" height="12" fill="#4a2f14"/>`;
+  if(t==='put')return `<circle cx="${cx}" cy="${cy}" r="21" fill="#8c8c8c" stroke="#444" stroke-width="2"/><circle cx="${cx}" cy="${cy}" r="13" fill="#3f7fbf"/>`;
+  if(t==='altaar')return `<rect x="${x0+10}" y="${y0+16}" width="${w-20}" height="${h-26}" fill="#eee" stroke="#666" stroke-width="2"/><text x="${cx}" y="${cy+8}" font-size="22" text-anchor="middle" fill="#b8860b">✝</text>`;
+  if(t==='troon')return `<text x="${cx}" y="${cy+13}" font-size="34" text-anchor="middle">🪑</text><text x="${cx+14}" y="${cy-10}" font-size="17" text-anchor="middle">👑</text>`;
+  return `<text x="${cx}" y="${cy+12}" font-size="34" text-anchor="middle">${EMO[t]||'?'}</text>`;
+}
+
+function boardSVG(opt={}){
+  const M=P.M,N=M.N,W=N*CS+2*MG;const o=[];
+  for(let i=0;i<N*N;i++){const y=Math.floor(i/N),x=i%N;const X=MG+x*CS,Y=MG+y*CS;
+    let fill=opt.blank?'#fff':M.rooms[M.reg[i]].color;
+    if(opt.blank&&M.obj[i]&&!OCC.has(M.obj[i]))fill='#9a9a9a';
+    o.push(`<rect x="${X}" y="${Y}" width="${CS}" height="${CS}" fill="${fill}" stroke="#555" stroke-width="0.8"/>`)}
+  for(const ob of M.objs){const ys=ob.cells.map(i=>Math.floor(i/N)),xs=ob.cells.map(i=>i%N);
+    const x0=MG+Math.min(...xs)*CS,y0=MG+Math.min(...ys)*CS,w=(Math.max(...xs)-Math.min(...xs)+1)*CS,h=(Math.max(...ys)-Math.min(...ys)+1)*CS;
+    if(opt.blank){if(OCC.has(ob.t))o.push(`<rect x="${x0+9}" y="${y0+9}" width="${w-18}" height="${h-18}" rx="8" fill="none" stroke="#777" stroke-width="1.6"/>`);continue}
+    o.push(objSVG(ob.t,x0,y0,w,h))}
+  for(let i=0;i<N*N;i++){const y=Math.floor(i/N),x=i%N;const X=MG+x*CS,Y=MG+y*CS;
+    if(x+1<N&&M.reg[i+1]!==M.reg[i])o.push(`<line x1="${X+CS}" y1="${Y}" x2="${X+CS}" y2="${Y+CS}" stroke="#222" stroke-width="5" stroke-linecap="round"/>`);
+    if(y+1<N&&M.reg[i+N]!==M.reg[i])o.push(`<line x1="${X}" y1="${Y+CS}" x2="${X+CS}" y2="${Y+CS}" stroke="#222" stroke-width="5" stroke-linecap="round"/>`)}
+  o.push(`<rect x="${MG}" y="${MG}" width="${N*CS}" height="${N*CS}" fill="none" stroke="#222" stroke-width="6"/>`);
+  if(!opt.blank)for(let k=0;k<M.K;k++){ // label on the lowest free cell of each region
+    let best=-1;for(let i=0;i<N*N;i++)if(M.reg[i]===k){const sc=(M.obj[i]?0:1000)+Math.floor(i/N)*20-(i%N);if(best<0||sc>bestS){best=i;var bestS=sc}}
+    const nm=room(k).toUpperCase();const w=nm.length*6.6+8;const X=MG+(best%N)*CS+3,Y=MG+(Math.floor(best/N)+1)*CS-12;
+    o.push(`<rect x="${X}" y="${Y-8}" width="${w}" height="16" rx="3" fill="#fff" stroke="#333" stroke-width="1"/><text x="${X+w/2}" y="${Y+4}" font-size="10" font-family="Georgia,serif" text-anchor="middle" letter-spacing=".4">${nm}</text>`)}
+  if(opt.marks){
+    const pos=opt.marks;const rowsUsed={},colsUsed={};
+    for(const n in pos){const i=pos[n];const y=Math.floor(i/N),x=i%N;(rowsUsed[y]=rowsUsed[y]||[]).push(n);(colsUsed[x]=colsUsed[x]||[]).push(n)}
+    for(const i in (opt.x||{})){const y=Math.floor(i/N),x=i%N;const X=MG+x*CS,Y=MG+y*CS;
+      o.push(`<path d="M${X+16} ${Y+16}L${X+CS-16} ${Y+CS-16}M${X+CS-16} ${Y+16}L${X+16} ${Y+CS-16}" stroke="#333" stroke-width="6" stroke-linecap="round" opacity=".8"/>`)}
+    for(const n in pos){const i=pos[n];const y=Math.floor(i/N),x=i%N;const cx=MG+x*CS+CS/2,cy=MG+y*CS+CS/2;
+      const bad=opt.conflicts&&(rowsUsed[y].length>1||colsUsed[x].length>1);
+      const red=opt.solution&&(n===P.vic.name||n===P.killer);
+      const col=bad?'#d32f2f':red?'#b22222':'#222';
+      o.push(`<circle cx="${cx}" cy="${cy}" r="18" fill="#fff" stroke="${col}" stroke-width="${bad?4:3}"/><text x="${cx}" y="${cy+7}" font-size="20" font-weight="bold" text-anchor="middle" fill="${col}" font-family="Georgia,serif">${n==='Heer Vranck'||n==='Vrouwe Walburga'?'V':n[0]}</text>`)}
+  }
+  if(opt.hit)for(let i=0;i<N*N;i++){const y=Math.floor(i/N),x=i%N;o.push(`<rect class="hit" data-i="${i}" x="${MG+x*CS}" y="${MG+y*CS}" width="${CS}" height="${CS}" fill="transparent"/>`)}
+  return {inner:o.join(''),vb:`0 0 ${W} ${W}`};
+}
+function svgStr(opt,cls){const b=boardSVG(opt);return `<svg class="${cls}" viewBox="${b.vb}" xmlns="http://www.w3.org/2000/svg">${b.inner}</svg>`}
+
+function letter(n){return n===P.vic.name?'V':n[0]}
+function people(){return P.sus.map(s=>s.name).concat(P.vic.name)}
+
+function renderBoard(){
+  const b=boardSVG({marks:showSol?P.sol:state,x:showSol?{}:marks,conflicts:!showSol,solution:showSol,hit:true});
+  const svg=$('#board');svg.setAttribute('viewBox',b.vb);svg.innerHTML=b.inner;
+  // palette
+  const pal=$('#palette');pal.innerHTML='';
+  const mk=(id,html,label)=>{const btn=document.createElement('button');btn.className='tool';btn.innerHTML=html;btn.setAttribute('aria-label',label);
+    btn.setAttribute('aria-pressed',tool===id);if(id!=='X'&&id!=='erase'&&state[id]!==undefined)btn.classList.add('done');
+    btn.onclick=()=>{tool=tool===id?null:id;renderBoard();renderCards()};pal.appendChild(btn)};
+  for(const s of P.sus)mk(s.name,`<span class="em">${s.face}</span>${s.name[0]}`,s.name);
+  mk(P.vic.name,`<span class="em">${P.vic.face}</span>V`,vn(P.vic.name));
+  mk('X','<span class="em">✕</span>',L.ui.crossOut);
+  mk('erase','<span class="em">⌫</span>',L.ui.eraser);
+}
+function renderCards(){
+  const c=$('#cards');c.innerHTML='';
+  for(const s of P.sus.concat([P.vic])){
+    const d=document.createElement('div');d.className='card'+(s.victim?' victim':'')+(tool===s.name?' sel':'');
+    d.innerHTML=`${state[s.name]!==undefined?'<span class="placed">✓</span>':''}<div class="face">${s.face}</div><div class="tag">${vn(s.name).toUpperCase()}</div><div class="txt">${s.victim?L.victimCard(s.g):clueText(s.name)}</div>`;
+    d.onclick=()=>{tool=tool===s.name?null:s.name;renderBoard();renderCards();if(innerWidth<900)$('#board').scrollIntoView({behavior:'smooth',block:'start'})};
+    c.appendChild(d)}
+}
+function iconSVG(t){const o=objSVG(t,0,0,60,60);return `<svg viewBox="0 0 60 60">${o}</svg>`}
+function renderStatic(){
+  $('#caseNo').textContent=L.caseNo(P.seed);
+  $('#title').textContent=L.caseTitle(P.seed,vn(P.vic.name));
+  $('#sub').textContent=L.subs[P.seed%L.subs.length];
+  const types=[...new Set(P.M.obj.filter(Boolean))];
+  const occ=types.filter(t=>OCC.has(t)),blk=types.filter(t=>!OCC.has(t));
+  $('#legend').innerHTML=`<div class="leg ok"><b>${L.ui.canOcc}</b><br>${occ.map(t=>`<span class="li">${iconSVG(t)}${lbl(t)}</span>`).join('')}</div>`+
+    `<div class="leg no"><b>${L.ui.cannotOcc}</b><br>${blk.map(t=>`<span class="li">${iconSVG(t)}${lbl(t)}</span>`).join('')}</div>`;
+  $('#rules').innerHTML=L.rules;
+  const sel=$('#killer');sel.innerHTML=`<option value="">${L.ui.choose}</option>`+P.sus.map(s=>`<option>${s.name}</option>`).join('');
+}
+function renderAll(){renderStatic();renderBoard();renderCards();save()}
+
+$('#board').addEventListener('click',e=>{
+  const t=e.target.closest('.hit');if(!t||showSol)return;const i=+t.dataset.i;
+  const occAt=Object.keys(state).find(n=>state[n]===i);
+  if(!tool){if(occAt){delete state[occAt]}else if(marks[i])delete marks[i];else marks[i]=1}
+  else if(tool==='X'){if(marks[i])delete marks[i];else{marks[i]=1;if(occAt)delete state[occAt]}}
+  else if(tool==='erase'){delete marks[i];if(occAt)delete state[occAt]}
+  else{
+    const g=geom(P.M);if(!g.occ.includes(i)){msg(L.msg.noStand,'bad');return}
+    if(occAt===tool){delete state[tool]}else{if(occAt)delete state[occAt];state[tool]=i;delete marks[i]}
+  }
+  msg('');renderBoard();renderCards();save();
+});
+
+function msg(t,c=''){const m=$('#msg');m.textContent=t;m.className=c}
+$('#checkBtn').onclick=()=>{
+  const ppl=people();const placed=ppl.filter(n=>state[n]!==undefined).length;
+  const wrong=ppl.filter(n=>state[n]!==undefined&&state[n]!==P.sol[n]).length;
+  const k=$('#killer').value;
+  if(placed<ppl.length){msg(wrong?L.msg.incomplete(wrong):L.msg.soFar(ppl.length-placed),wrong?'bad':'');return}
+  if(wrong){msg(L.msg.people(wrong),'bad');return}
+  if(!k){msg(L.msg.pickKiller,'good');return}
+  msg(k===P.killer?L.msg.solved(P.killer):L.msg.notKiller(k),k===P.killer?'good':'bad');
+};
+$('#hintBtn').onclick=()=>{
+  const ppl=people();const wrong=ppl.find(n=>state[n]!==undefined&&state[n]!==P.sol[n]);
+  if(wrong){msg(L.msg.misplaced(vn(wrong)),'bad');return}
+  const todo=P.sus.map(s=>s.name).concat(P.vic.name).find(n=>state[n]===undefined);
+  if(!todo){msg(L.msg.allPlaced);return}
+  state[todo]=P.sol[todo];delete marks[P.sol[todo]];msg(L.msg.placed(vn(todo)));renderBoard();renderCards();save();
+};
+$('#clearBtn').onclick=()=>{if(!confirm(L.msg.confirmClear))return;state={};marks={};showSol=false;msg('');renderBoard();renderCards();save()};
+$('#solveBtn').onclick=()=>{showSol=!showSol;$('#solveBtn').textContent=showSol?L.ui.hideSolution:L.ui.solution;
+  msg(showSol?L.msg.reveal(P.killer,vn(P.vic.name),room(P.M.reg[P.sol[P.vic.name]]).toLowerCase()):'');renderBoard()};
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{diff=b.dataset.d;
+  document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));newCase()});
+$('#newBtn').onclick=()=>newCase();
+$('#printBtn').onclick=()=>{buildPrint();setTimeout(()=>print(),50)};
+
+function buildPrint(){
+  const withSol=confirm(L.msg.confirmPrint);
+  const cards=$('#cards').innerHTML.replace(/<span class="placed">✓<\/span>/g,'').replace(/ sel"/g,'"');
+  $('#print').innerHTML=`<div class="ppage"><h2 class="title">${$('#title').textContent}</h2><p class="sub">${$('#sub').textContent}</p>
+  <div class="cards">${cards}</div><div class="box"><h3>${L.ui.rules}</h3><ul>${$('#rules').innerHTML}</ul></div><div class="legend">${$('#legend').innerHTML}</div></div>
+  <div class="ppage">${svgStr({},'pboard')}<div class="prow">${svgStr({blank:true},'pblank')}<div class="pans">${L.print.killer}<div></div></div></div></div>`+
+  (withSol?`<div class="ppage"><h2 class="title">${L.print.solTitle(P.seed)}</h2>${svgStr({marks:P.sol,solution:true},'psol')}<p class="sub" style="margin-top:12px">${L.print.solLine(P.killer,vn(P.vic.name))}</p></div>`:'');
+}
+
+function save(){try{localStorage.setItem('murdoku:'+diff+':'+P.seed,JSON.stringify({state,marks}));localStorage.setItem('murdoku:last',location.hash)}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem('murdoku:'+diff+':'+P.seed)||'null');if(s){state=s.state||{};marks=s.marks||{}}}catch(e){}}
+
+// language switcher, from window.PAGE_LANGS (set by the build in the head)
+if(window.PAGE_LANGS)$('#langs').innerHTML=Object.keys(PAGE_LANGS).map(l=>`<a href="${PAGE_LANGS[l]}" hreflang="${l}" lang="${l}"${l===document.documentElement.lang?' aria-current="true"':''} onclick="switchLang('${l}');return false">${LANG_NAMES[l]}</a>`).join(' · ');
+
+// generation: in a worker when possible, so the page stays responsive
+let worker=null;
+function makeWorker(){
+  try{const src=$('#core').textContent+`;onmessage=e=>{const r=generate(e.data.seed,e.data.diff);postMessage(r)}`;
+    return new Worker(URL.createObjectURL(new Blob([src],{type:'text/javascript'})))}catch(e){return null}
+}
+function genAsync(seed,d){
+  return new Promise(res=>{
+    if(worker===null)worker=makeWorker()||false;
+    if(!worker){setTimeout(()=>res(generate(seed,d)),30);return}
+    let done=false;
+    worker.onmessage=e=>{done=true;res(e.data)};
+    worker.onerror=()=>{if(done)return;done=true;worker=false;res(generate(seed,d))};
+    worker.postMessage({seed,diff:d});
+  });
+}
+async function openCase(seed,d){
+  $('#busy').classList.add('on');
+  let g=null;for(let k=0;k<5&&!g;k++){g=await genAsync(seed,d);if(!g)seed=seed+1}
+  $('#busy').classList.remove('on');
+  if(!g){msg(L.msg.failed,'bad');return}
+  P=g;diff=d;state={};marks={};showSol=false;tool=null;$('#solveBtn').textContent=L.ui.solution;msg('');
+  document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.d===d));
+  history.replaceState(null,'',`#${d}-${seed}`);load();renderAll();
+}
+function newCase(){openCase(1+Math.floor(Math.random()*99999),diff)}
+function fromHash(){const m=/^#(easy|medium|hard)-(\d+)$/.exec(location.hash);if(m){openCase(+m[2],m[1]);return true}return false}
+window.addEventListener('hashchange',()=>{if(!P||location.hash!==`#${P.diff}-${P.seed}`)fromHash()});
+if(!fromHash()){const last=(()=>{try{return localStorage.getItem('murdoku:last')}catch(e){return null}})();
+  if(last&&/^#(easy|medium|hard)-\d+$/.test(last)){location.hash=last}else openCase(75,'medium')}
+</script>
+<!--FEEDBACK-->
+</body>
+</html>

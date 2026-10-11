@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Play Murder Sudoku
+    url: https://jeroenmarchand.github.io/murder-sudoku/
+    about: The game itself, with a feedback button that fills in this form for you.

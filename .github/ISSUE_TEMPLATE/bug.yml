@@ -1,0 +1,17 @@
+name: "🐞 Something is broken"
+description: Report a bug in the game or on the website. Any language is fine.
+labels: ["bug", "feedback"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What went wrong?
+      description: What did you do, what did you expect, and what happened? A screenshot helps a lot.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Technical details
+      description: Filled in automatically when you use the feedback button in the game.
+      render: markdown

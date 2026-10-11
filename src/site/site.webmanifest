@@ -1,0 +1,11 @@
+{
+  "name": "Murder Sudoku",
+  "short_name": "Murder Sudoku",
+  "description": "Free murder mystery logic puzzles in 3D",
+  "lang": "en",
+  "start_url": "./3d/",
+  "display": "standalone",
+  "background_color": "#120d1e",
+  "theme_color": "#140f22",
+  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
