@@ -425,10 +425,13 @@ const pcolor=n=>n===P.vic.name?'#f4ede0':PCOL[P.sus.findIndex(s=>s.name===n)%PCO
 
 // ---------- renderer & scene ----------
 const canvas=$('#c');
-const HQ=!(matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<600);
+const TOUCH=matchMedia('(pointer:coarse)').matches;
+const HQ=!(TOUCH&&Math.min(screen.width,screen.height)<600);
 const renderer=new THREE.WebGLRenderer({canvas,antialias:false,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+// battery: phones and tablets render at 1.5x (the multisampled target keeps edges clean), desktops at up to 2x
+renderer.setPixelRatio(Math.min(devicePixelRatio,TOUCH?1.5:2));
+// shadows are redrawn only when something moved (see loop), not every frame
+renderer.shadowMap.enabled=true;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(40,1,0.1,240);
@@ -454,7 +457,7 @@ composer.addPass(grade);
 scene.fog=new THREE.Fog('#1b1631',26,58);
 const hemi=new THREE.HemisphereLight('#cfd0ff','#3b2c22',.95);scene.add(hemi);
 const sun=new THREE.DirectionalLight('#ffe4bf',2.5);sun.position.set(-6,12,7);sun.castShadow=true;
-sun.shadow.mapSize.set(HQ?4096:2048,HQ?4096:2048);sun.shadow.bias=-0.0003;sun.shadow.normalBias=.025;sun.shadow.radius=4;sun.shadow.blurSamples=16;
+sun.shadow.mapSize.setScalar(HQ&&!TOUCH?4096:2048);sun.shadow.bias=-0.0003;sun.shadow.normalBias=.025;sun.shadow.radius=4;sun.shadow.blurSamples=16;
 Object.assign(sun.shadow.camera,{left:-8,right:8,top:8,bottom:-8,near:1,far:60});scene.add(sun);scene.add(sun.target);
 const rim=new THREE.DirectionalLight('#8d97ff',.55);rim.position.set(8,6,-9);scene.add(rim);
 const fill=new THREE.DirectionalLight('#ffd9b0',.25);fill.position.set(6,4,8);scene.add(fill);
@@ -796,9 +799,20 @@ function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);c
 addEventListener('resize',()=>{resize();if(P)flyTo(topView,300)});
 
 // ---------- loop ----------
-const clock=new THREE.Clock();let shadowDirty=true,lastT=performance.now();
+const clock=new THREE.Clock();let shadowDirty=true,lastT=performance.now(),lastShadow=0;
 const DIM=new THREE.Color('#8a8496');
-function loop(){requestAnimationFrame(loop);const now=performance.now(),t=clock.getElapsedTime(),dt=Math.min(.1,(now-lastT)/1000);lastT=now;
+// battery: full frame rate (capped at 60, also on 120 Hz screens) only while something moves or the player acts;
+// the ambient scene then drops to 24 fps, and to 10 fps after a minute without input
+let lastAct=performance.now(),lastInput=performance.now();
+const wake=()=>{lastAct=lastInput=performance.now()};
+for(const ev of['pointerdown','pointermove','wheel','keydown','touchstart'])addEventListener(ev,wake,{passive:true,capture:true});
+document.addEventListener('visibilitychange',()=>{lastT=performance.now();wake()});
+const perf={fps:0,n:0,t0:performance.now(),shadows:0};
+function loop(){requestAnimationFrame(loop);const now=performance.now();
+  if(tweens.length||find?.on)lastAct=now;
+  const busy=now-lastAct<2500,gap=busy?15:now-lastInput<60000?40:98;if(now-lastT<gap)return;
+  if(++perf.n,now-perf.t0>=1000){perf.fps=Math.round(perf.n*1000/(now-perf.t0));perf.n=0;perf.t0=now}
+  const real=now-lastT,t=clock.getElapsedTime(),dt=Math.min(.1,real/1000);lastT=now;
   for(let k=tweens.length-1;k>=0;k--){const tw=tweens[k];if(tw.dead){tweens.splice(k,1);continue}const p=Math.min(1,(now-tw.t0)/tw.dur);tw.fn(p);if(p>=1){tweens.splice(k,1);tw.done&&tw.done()}}
   for(const f of flames){if(f.g){const s=1+Math.sin(t*12+f.ph)*.08+Math.sin(t*23+f.ph)*.05;f.g.scale.set(s,s*(1+Math.sin(t*9+f.ph)*.1),s)}
     if(f.light)f.light.intensity=2+Math.sin(t*10+f.ph)*.35+Math.sin(t*27+f.ph)*.2;if(f.flag){f.flag.rotation.y=Math.sin(t*3+f.ph)*.35;f.flag.scale.x=1+Math.sin(t*5+f.ph)*.08}}
@@ -819,8 +833,11 @@ function loop(){requestAnimationFrame(loop);const now=performance.now(),t=clock.
   if(ghost)ghost.material.opacity=.3+Math.sin(t*6)*.08;
   // keep panning near the board
   const L=P?P.M.N/2+1:6;controls.target.x=THREE.MathUtils.clamp(controls.target.x,-L,L);controls.target.z=THREE.MathUtils.clamp(controls.target.z,-L,L);controls.target.y=THREE.MathUtils.clamp(controls.target.y,-1,1);
-  if(P&&!solved&&!showSol&&!document.hidden&&started){elapsed+=dt*1000;const sec=Math.floor(elapsed/1000);if(sec!==lastSec){lastSec=sec;$('#timer').textContent=fmtTime(elapsed)}}
-  findFrame(now);grade.uniforms.time.value=t%10;controls.update();focusFrame();composer.render()}
+  if(P&&!solved&&!showSol&&!document.hidden&&started){elapsed+=Math.min(1000,real);const sec=Math.floor(elapsed/1000);if(sec!==lastSec){lastSec=sec;$('#timer').textContent=fmtTime(elapsed)}}
+  findFrame(now);grade.uniforms.time.value=t%10;if(controls.update())lastAct=now;focusFrame();
+  // shadows: every frame while busy (pawns and camera move), otherwise twice a second for the slow sun drift and swaying trees
+  if(shadowDirty||busy||now-lastShadow>500){renderer.shadowMap.needsUpdate=true;shadowDirty=false;lastShadow=now;perf.shadows++}
+  composer.render()}
 let elapsed=0,lastSec=-1,started=false,solved=false,solvedNow=false,hints=0,wrongAcc=[];
 const fmtTime=ms=>{const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 
@@ -1103,7 +1120,7 @@ addEventListener('keydown',e=>{if(!P||e.target.closest('select,input,textarea'))
   else if(k==='H')hint();else if(k==='C')setTop(!topView);
   else{const n=byLetter(k);if(!n)return;tool=tool===n?null:n;if(mode==='x')setMode('pen');hintFor=null;showHintRings([]);renderUI();updateGhost()}});
 window.feedbackContext=()=>({[L.fb.case]:P?`${P.diff}-${P.seed}`:"-",[L.fb.setting]:TH?TH.id:"-",[L.fb.mode]:mode,[L.fb.placed]:Object.keys(state||{}).length});
-window.__dbg={get P(){return P},controls,composer,scene,get world(){return world},get TH(){return TH},tapCell,setMode,get notes(){return notes},get state(){return state},get pawns(){return pawns},camera,renderer,get tool(){return tool},set tool(v){tool=v;renderUI()},hint,
+window.__dbg={perf,get P(){return P},controls,composer,scene,get world(){return world},get TH(){return TH},tapCell,setMode,get notes(){return notes},get state(){return state},get pawns(){return pawns},camera,renderer,get tool(){return tool},set tool(v){tool=v;renderUI()},hint,
   cellScreen:i=>{const v=cellPos(i);v.y=baseY(i)+.05;v.project(camera);const r=canvas.getBoundingClientRect();return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}},
   showType,find:()=>({on:!!find&&find.on,n:find?find.mesh.count:0,alpha:FIND_M.uniforms.uA.value,visible:!!find&&find.mesh.visible,pins:findPins.filter(p=>p.visible).length,focus:grade.uniforms.focus.value}),
   get busy(){return tweens.length},get mode(){return mode},get solved(){return solved},
