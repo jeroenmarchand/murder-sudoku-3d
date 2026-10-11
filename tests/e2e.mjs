@@ -17,8 +17,9 @@ const srv=await start();const b=srv.browser;const URL=process.argv[2]||srv.url+'
   const ready=()=>p.waitForFunction(()=>window.__dbg&&__dbg.P&&document.querySelector('#loader.off')&&__dbg.busy===0,null,{timeout:60000});
   await ready();
   const D=(f,a)=>p.evaluate(f,a);const idle=async()=>{await p.waitForFunction(()=>__dbg.busy===0,null,{timeout:CI?60000:8000});await p.waitForTimeout(80)};
-  // first run: dossier opens on phone
-  await p.waitForTimeout(2500);
+  // first run: the tutorial offer appears; skipping it opens the dossier on phone
+  ok(await p.waitForSelector('#tutOffer.on',{timeout:CI?60000:8000}).then(()=>true,()=>false),'first run offers the tutorial');
+  await p.click('#tutSkip');await p.waitForTimeout(700);
   if(name==='phone'){ok(await D(()=>document.querySelector('#dossier').classList.contains('open')),'first run opens dossier');await p.click('#closeDoss');await p.waitForTimeout(400)}
   const sol=await D(()=>({sol:__dbg.P.sol,people:__dbg.P.sus.map(s=>s.name).concat(__dbg.P.vic.name),killer:__dbg.P.killer,N:__dbg.P.M.N,obj:__dbg.P.M.obj}));
   const tapReal=async i=>{const c=await D(`__dbg.cellScreen(${i})`);if(dev.hasTouch)await p.touchscreen.tap(c.x,c.y);else await p.mouse.click(c.x,c.y);await idle()};

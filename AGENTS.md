@@ -18,6 +18,7 @@ npm test                       # build + all tests; must pass before you finish
 npm run test:core              # generator unit tests only (fast, no browser)
 npm run test:smoke             # every page, language, and 3D theme loads without console errors
 npm run test:e2e               # full play-through of the 3D app on phone and tablet viewports
+npm run test:tutorial          # plays the guided tutorial on phone (English) and desktop (Dutch); --ipad adds a tablet pass
 npm run screenshots            # regenerate landing-page images (needs a real GPU; not in CI)
 ```
 
@@ -30,13 +31,14 @@ Browser tests use Playwright's Chromium if installed (`npx playwright install ch
 | `src/core.js` | Puzzle generator and solver. Plain script, also runs inside a Web Worker. Inlined as `<script id="core">`. |
 | `src/3d/i18n/<lang>.js` | 3D app text and clue grammar per language (`const L={...}`). |
 | `src/3d/index.html` | 3D app (three.js r169 via importmap, served from `vendor/`). Engine, UI, input, save state. `/*@THEMES*/` is replaced by the theme files. |
+| `src/3d/tutorial.js` | Guided tutorial (coach panel, steps, highlights) on a fixed easy castle case embedded as `TUT_CASE`. Inlined at `/*@TUTORIAL*/`, shares the engine's scope. Saves under `murdoku2:tutorial` and never touches progress or stats. |
 | `src/3d/themes/*.js` | One file per setting, each calling `registerTheme({...})`. Dutch text inline, other languages in `i18n.<lang>`. Castle is the reference. |
 | `src/classic/index.html` | 2D SVG version with print layout. Text in `src/classic/i18n/<lang>.js`. |
 | `src/site/` | Landing pages (`index.html` English, `nl/index.html` Dutch), images, favicon, app icons (`img/icons/`), manifest, service worker (`sw.js`), 404. Copied to the root of `dist/`. |
 | `scripts/icons.mjs` | Renders the web app icons (`src/site/img/icons/`) with Playwright. Run it after changing the icon design. |
 | `src/shared/feedback.js` | Feedback dialog (English and Dutch). Opens a prefilled GitHub issue form from `.github/ISSUE_TEMPLATE/`. |
 | `scripts/build.mjs` | Builds every page once per language (`LANGS`). Inlines core, themes, feedback, and `i18n/<lang>.js` at `/*@LANG*/`; replaces `{{t:key}}` at build time, plus `__LANG__`, `__ROOT__`, `__URL__`, `__SITE__`, `__REPO__`, `<!--HREFLANG-->`, and `<!--SW-->` (service worker registration); copies three.js and the fonts from `node_modules` to `dist/vendor/`; writes `sw.js` with the precache list and a cache version hash, sitemap, and robots. |
-| `tests/` | `core.test.mjs` (node:test), `smoke.mjs` and `e2e.mjs` (Playwright, served from `dist/`). |
+| `tests/` | `core.test.mjs` (node:test), `smoke.mjs`, `e2e.mjs`, and `tutorial.mjs` (Playwright, served from `dist/`). |
 | `docs/THEMES.md` | Full guide and API for writing a new 3D setting. Read it before touching themes. |
 
 Never edit `dist/`; it is generated.
@@ -59,6 +61,7 @@ Never edit `dist/`; it is generated.
 
 - `/3d/?theme=space#medium-75` forces a theme and a case. Cases are `easy|medium|hard` plus a seed.
 - `/3d/?nobake` disables mesh merging.
+- `/3d/?tutorial` starts the guided tutorial (also in the ⋯ menu, and offered on a first visit).
 - `/classic/#easy-12` opens a case in the 2D version.
 - `/?sw` registers the service worker on localhost, to test offline play.
 - Prefix any path with `/nl/` for Dutch. Language choice is stored in `localStorage` (`murdoku2:lang`); until a visitor picks one, a browser that prefers Dutch is sent to `/nl/`.
